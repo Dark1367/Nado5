@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="card p-4 w-100" style="max-width: 400px;">
-    <h1 class="h4 text-center mb-4">Login</h1>
+    <h1 class="h4 text-center mb-4">Register</h1>
     <form method="post">
         <div class="mb-3">
             <label>Email</label>
@@ -12,10 +12,17 @@
             <label>Password</label>
             <input type="password" name="password" class="form-control" placeholder="••••••••">
         </div>
-        <button type="submit" class="btn btn-primary w-100">Sign In</button>
-        <a href="/register"
+        <div class="mb-3">
+            <label>Password confirm</label>
+            <input type="password" name="password_conf" class="form-control" placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Sign Up</button>
+        {% if error %}
+        <p style="color: red;">{{ error }}</p>
+        {% endif %}
+        <a href="/login"
            style="color: grey; text-decoration: underline; float: right; margin-top: 10px;">
-            Register
+            Log In
         </a>
     </form>
 </div>

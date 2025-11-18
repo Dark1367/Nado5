@@ -74,6 +74,26 @@ def login(request: Request, session: SessionDep, email: str = Form(...), passwor
     response.set_cookie("access_token", token, httponly=True)
     return response
 
+@app.get("/register", response_class=HTMLResponse)
+def register_page(request: Request):
+    return templates.TemplateResponse("register.html", {"request": request})
+
+@app.post("/register", response_class=HTMLResponse)
+def register(request: Request, session: SessionDep, email: str = Form(...), password: str = Form(...), password_conf: str = Form(...)):
+    if not uu.get_by_email(email, session) is None:
+        return templates.TemplateResponse("register.html", {"request": request, "error": "Email already exist"})
+    if len(email) < 4:
+        return templates.TemplateResponse("register.html", {"request": request, "error": "Email should contain at least 4 characters"})
+    if len(password) < 5:
+        return templates.TemplateResponse("register.html", {"request": request, "error": "Password should contain at least 5 characters"})
+    if password != password_conf:
+        return templates.TemplateResponse("register.html", {"request": request, "error": "Passwords are not matching"})
+    user = PrivateUser(email=email, password=password)
+    uu.create_user(user, session)
+    token = create_access_token(data={"sub": email})
+    response = RedirectResponse(url="/", status_code=302)
+    response.set_cookie("access_token", token, httponly=True)
+    return response
 
 @app.get("/logout")
 def logout(request: Request):
