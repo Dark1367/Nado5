@@ -99,7 +99,6 @@ body {
   margin-bottom: 2rem;
   padding: clamp(1rem, 3vw, 2rem);
   overflow: auto;
-  /* Добавляем прокрутку если нужно */
   text-align: center;
   position: relative;
 }
@@ -111,10 +110,8 @@ body {
   margin: 0 0 1rem 0;
   line-height: 1.4;
   max-width: 85%;
-  /* Ограничиваем ширину текста */
   word-wrap: break-word;
   hyphens: auto;
-  /* Автоматические переносы */
   overflow-wrap: break-word;
 }
 
@@ -191,6 +188,113 @@ body {
   text-decoration: underline;
 }
 
+/* ===== AUTH STYLES ===== */
+.auth-container {
+  background-color: white;
+  border-radius: 12px;
+  padding: 2.5rem;
+  width: min(90vw, 400px);
+  max-width: 400px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  margin: 2rem auto;
+}
+
+.auth-title {
+  color: #095594;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-label {
+  color: #333;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.form-input {
+  padding: 0.875rem 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background-color: #fafafa;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #2196F3;
+  background-color: white;
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+}
+
+.auth-btn {
+  background-color: #095594;
+  border: none;
+  color: #ffffff;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  margin-top: 0.5rem;
+}
+
+.auth-btn:hover {
+  background: linear-gradient(to right, #e3f2fd, #bbdefb);
+  color: #2196F3;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(33, 150, 243, 0.3);
+}
+
+.auth-links {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+.register-link {
+  color: #757575;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.3s ease;
+}
+
+.register-link:hover {
+  color: #095594;
+  text-decoration: underline;
+}
+
+.error-message {
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+  border-left: 4px solid #c62828;
+  display: none;
+}
+
+.error-message.show {
+  display: block;
+}
+
 /* ===== MEDIA QUERIES ===== */
 
 /* Tablet (768px и выше) */
@@ -234,6 +338,10 @@ body {
 
   .footer p:last-child {
     text-align: right;
+  }
+
+  .auth-container {
+    padding: 3rem;
   }
 }
 
@@ -303,7 +411,7 @@ body {
     font-size: 0.95rem;
   }
 
-  .button-group {
+  .buttongen {
     flex-direction: column;
     align-items: center;
     width: 100%;
@@ -316,6 +424,15 @@ body {
 
   .footer {
     padding: 1.25rem 1rem;
+  }
+
+  .auth-container {
+    padding: 2rem 1.5rem;
+    margin: 1rem auto;
+  }
+  
+  .auth-title {
+    font-size: 1.3rem;
   }
 }
 
@@ -354,5 +471,9 @@ body {
   .subtitle {
     font-size: 0.9rem;
     margin-bottom: 1.5rem;
+  }
+
+  .auth-container {
+    padding: 1.5rem 1rem;
   }
 }

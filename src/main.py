@@ -63,13 +63,13 @@ def login_page(request: Request):
 
 
 @app.post("/login")
-def login(request: Request, session: SessionDep, email: str = Form(...), password: str = Form(...)):
-    current_user = uu.get_by_email(email, session)
+def login(request: Request, session: SessionDep, login: str = Form(...), password: str = Form(...)):
+    current_user = uu.get_by_email(login, session)
     if current_user is None:
-        return RedirectResponse(url="/login", status_code=404)
-    # if current_user.password_hash != uu.make_hash(PrivateUser(email=email, password=password)):
-    #     return RedirectResponse(url="/login", status_code=401)
-    token = create_access_token(data={"sub": email})
+        return templates.TemplateResponse("Login.html", {"request": request, "error": "Неправильно введён логин"})
+    if current_user.password_hash != uu.make_hash(PrivateUser(email=login, password=password)):
+        return templates.TemplateResponse("Login.html", {"request": request, "error": "Неправильно введён пароль"})
+    token = create_access_token(data={"sub": login})
     response = RedirectResponse(url="/", status_code=302)
     response.set_cookie("access_token", token, httponly=True)
     return response
