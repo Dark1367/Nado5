@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/styles.css">
+    <title>LimGen | Регистрация</title>
+</head>
+
+<body>
+    <header class="header">
+        <button class="logo" onclick="window.location.href='../MainPage/index.html'" aria-label="На главную">
+            <img src="../static/logo.png" alt="Логотип">
+        </button>
+    </header>
+
+    <main class="main">
+        <div class="auth-container">
+            <h2 class="auth-title">Регистрация в системе</h2>
+
+            <form class="auth-form" id="registerForm" method="post">
+                <div class="form-group">
+                    <label for="login" class="form-label">Придумайте логин</label>
+                    <input name="login" type="text" id="login" class="form-input" placeholder="Введите ваш логин" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Придумайте пароль</label>
+                    <input name="password" type="password" id="password" class="form-input" placeholder="Введите ваш пароль" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword" class="form-label">Подтвердите пароль</label>
+                    <input name="pasword_conf" type="password" id="confirmPassword" class="form-input" placeholder="Повторите ваш пароль"
+                        required>
+                </div>
+
+                <button type="submit" class="auth-btn">Зарегистрироваться</button>
+
+                {% if error %}
+                <div class="error-message" style="display: block;">
+                    {{ error }}
+                </div>
+                {% endif %}
+
+            </form>
+
+            <div class="auth-links">
+                <a href="../AuthPage/index.html" class="register-link">Авторизоваться</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>© 2025 LimGen. Все права защищены.</p>
+        <p>Разработано студентами <strong>РТУ МИРЭА</strong> | <a href="#">GitHub проекта</a></p>
+        <p><a href="https://t.me/AboutMathematics">О математике. ВУЗ😉</a> | Telegram канал</p>
+    </footer>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const passwordError = document.getElementById('passwordError');
+            const userExistsError = document.getElementById('userExistsError');
+
+            passwordError.classList.remove('show');
+            userExistsError.classList.remove('show');
+
+            if (password !== confirmPassword) {
+                passwordError.classList.add('show');
+                return;
+            }
+        });
+
+        document.getElementById('confirmPassword').addEventListener('input', function () {
+            const password = document.getElementById('password').value;
+            const confirmPassword = this.value;
+            const passwordError = document.getElementById('passwordError');
+
+            if (confirmPassword && password !== confirmPassword) {
+                passwordError.classList.add('show');
+            } else {
+                passwordError.classList.remove('show');
+            }
+        });
+
+        document.getElementById('password').addEventListener('input', function () {
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const passwordError = document.getElementById('passwordError');
+
+            if (confirmPassword && this.value !== confirmPassword) {
+                passwordError.classList.add('show');
+            } else {
+                passwordError.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+
+</html>

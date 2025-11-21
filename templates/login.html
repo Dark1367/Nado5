@@ -1,18 +1,56 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="ru">
 
-{% block content %}
-<div class="card p-4 w-100" style="max-width: 400px;">
-    <h1 class="h4 text-center mb-4">Login</h1>
-    <form method="post">
-        <div class="mb-3">
-            <label>Email</label>
-            <input type="email" name="email" class="form-control" placeholder="you@example.com">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../static/styles.css">
+  <title>LimGen | Авторизация</title>
+</head>
+
+<body>
+  <header class="header">
+    <button class="logo" onclick="window.location.href='../MainPage/index.html'" aria-label="На главную">
+      <img src="../static/logo.png" alt="Логотип">
+    </button>
+  </header>
+
+  <main class="main">
+    <div class="auth-container">
+      <h2 class="auth-title">Вход в систему</h2>
+
+      <form class="auth-form" id="loginForm" method="post">
+        <div class="form-group">
+          <label for="login" class="form-label">Логин</label>
+          <input name = "login" type="text" id="login" class="form-input" placeholder="Введите ваш логин" required>
         </div>
-        <div class="mb-3">
-            <label>Password</label>
-            <input type="password" name="password" class="form-control" placeholder="••••••••">
+
+        <div class="form-group">
+          <label for="password" class="form-label">Пароль</label>
+          <input name = "password" type="password" id="password" class="form-input" placeholder="Введите ваш пароль" required>
         </div>
-        <button type="submit" class="btn btn-primary w-100">Sign In</button>
-    </form>
-</div>
-{% endblock %}
+
+        <button type="submit" class="auth-btn">Авторизоваться</button>
+
+          {% if error %}
+          <div class="error-message" style="display: block;">
+              {{ error }}
+          </div>
+          {% endif %}
+
+      </form>
+
+      <div class="auth-links">
+        <a href="../RegPage/index.html" class="register-link">Зарегистрироваться</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2025 LimGen. Все права защищены.</p>
+    <p>Разработано студентами <strong>РТУ МИРЭА</strong> | <a href="#">GitHub проекта</a></p>
+    <p><a href="https://t.me/AboutMathematics">О математике. ВУЗ😉</a> | Telegram канал</p>
+  </footer>
+</body>
+
+</html>
