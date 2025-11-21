@@ -32,7 +32,7 @@
 
                 <div class="form-group">
                     <label for="confirmPassword" class="form-label">Подтвердите пароль</label>
-                    <input name="pasword_conf" type="password" id="confirmPassword" class="form-input" placeholder="Повторите ваш пароль"
+                    <input name="password_conf" type="password" id="password_conf" class="form-input" placeholder="Повторите ваш пароль"
                         required>
                 </div>
 
@@ -47,7 +47,7 @@
             </form>
 
             <div class="auth-links">
-                <a href="../AuthPage/index.html" class="register-link">Авторизоваться</a>
+                <a href="/login" class="register-link">Авторизоваться</a>
             </div>
         </div>
     </main>
@@ -57,48 +57,6 @@
         <p>Разработано студентами <strong>РТУ МИРЭА</strong> | <a href="#">GitHub проекта</a></p>
         <p><a href="https://t.me/AboutMathematics">О математике. ВУЗ😉</a> | Telegram канал</p>
     </footer>
-
-    <script>
-        document.getElementById('registerForm').addEventListener('submit', function (e) {
-            e.preventDefault();
-
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            const passwordError = document.getElementById('passwordError');
-            const userExistsError = document.getElementById('userExistsError');
-
-            passwordError.classList.remove('show');
-            userExistsError.classList.remove('show');
-
-            if (password !== confirmPassword) {
-                passwordError.classList.add('show');
-                return;
-            }
-        });
-
-        document.getElementById('confirmPassword').addEventListener('input', function () {
-            const password = document.getElementById('password').value;
-            const confirmPassword = this.value;
-            const passwordError = document.getElementById('passwordError');
-
-            if (confirmPassword && password !== confirmPassword) {
-                passwordError.classList.add('show');
-            } else {
-                passwordError.classList.remove('show');
-            }
-        });
-
-        document.getElementById('password').addEventListener('input', function () {
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            const passwordError = document.getElementById('passwordError');
-
-            if (confirmPassword && this.value !== confirmPassword) {
-                passwordError.classList.add('show');
-            } else {
-                passwordError.classList.remove('show');
-            }
-        });
-    </script>
 </body>
 
 </html>

@@ -79,18 +79,18 @@ def register_page(request: Request):
     return templates.TemplateResponse("register.html", {"request": request})
 
 @app.post("/register", response_class=HTMLResponse)
-def register(request: Request, session: SessionDep, email: str = Form(...), password: str = Form(...), password_conf: str = Form(...)):
-    if not uu.get_by_email(email, session) is None:
+def register(request: Request, session: SessionDep, login: str = Form(...), password: str = Form(...), password_conf: str = Form(...)):
+    if not uu.get_by_email(login, session) is None:
         return templates.TemplateResponse("register.html", {"request": request, "error": "Email already exist"})
-    if len(email) < 4:
+    if len(login) < 4:
         return templates.TemplateResponse("register.html", {"request": request, "error": "Email should contain at least 4 characters"})
     if len(password) < 5:
         return templates.TemplateResponse("register.html", {"request": request, "error": "Password should contain at least 5 characters"})
     if password != password_conf:
         return templates.TemplateResponse("register.html", {"request": request, "error": "Passwords are not matching"})
-    user = PrivateUser(email=email, password=password)
+    user = PrivateUser(email=login, password=password)
     uu.create_user(user, session)
-    token = create_access_token(data={"sub": email})
+    token = create_access_token(data={"sub": login})
     response = RedirectResponse(url="/", status_code=302)
     response.set_cookie("access_token", token, httponly=True)
     return response

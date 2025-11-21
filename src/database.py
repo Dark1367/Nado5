@@ -16,7 +16,7 @@ class TableTemplate(Template, table=True):
 
 
 class PublicUser(SQLModel):
-    email: EmailStr
+    email: str
 
 
 class PrivateUser(PublicUser):
