@@ -81,13 +81,13 @@ def register_page(request: Request):
 @app.post("/register", response_class=HTMLResponse)
 def register(request: Request, session: SessionDep, login: str = Form(...), password: str = Form(...), password_conf: str = Form(...)):
     if not uu.get_by_email(login, session) is None:
-        return templates.TemplateResponse("register.html", {"request": request, "error": "Email already exist"})
+        return templates.TemplateResponse("register.html", {"request": request, "error": "Такой логин уже существует"})
     if len(login) < 4:
-        return templates.TemplateResponse("register.html", {"request": request, "error": "Email should contain at least 4 characters"})
+        return templates.TemplateResponse("register.html", {"request": request, "error": "Логин должен содержать хотя-бы 4 символа"})
     if len(password) < 5:
-        return templates.TemplateResponse("register.html", {"request": request, "error": "Password should contain at least 5 characters"})
+        return templates.TemplateResponse("register.html", {"request": request, "error": "Пароль должен содержать хотя-бы 5 символов"})
     if password != password_conf:
-        return templates.TemplateResponse("register.html", {"request": request, "error": "Passwords are not matching"})
+        return templates.TemplateResponse("register.html", {"request": request, "error": "Пароли не соответствуют"})
     user = PrivateUser(email=login, password=password)
     uu.create_user(user, session)
     token = create_access_token(data={"sub": login})
