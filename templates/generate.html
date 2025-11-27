@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/styles.css">
+    <title>LimGen | Настройки</title>
+</head>
+
+<body>
+
+    <header class="header">
+        <button class="logo" onclick="location.href='/main'" aria-label="На главную">
+            <img src="../static/logo.png" alt="Логотип">
+        </button>
+
+        <div class="nav-menu">
+            <a href="../AuthPage/index.html">Профиль</a>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="settings-container">
+            <form action="/generate" method="post">
+                <div class="settings-card">
+                    <h1 class="settings-title">Настройки генерации</h1>
+
+                    <div class="setting-item">
+                        <div class="setting-text">
+                            <span class="setting-label">1. Первый пример предела</span>
+                            <div class="examples-list">
+                                <div class="example-item">
+                                    <span class="example-label">Пример 1</span>
+                                    <div class="number-input">
+                                        <button class="number-btn minus" type="button">-</button>
+                                        <input name="number_1" type="number" class="number-field" value="0" min="0">
+                                        <button class="number-btn plus" type="button">+</button>
+                                    </div>
+                                </div>
+                                <div class="example-item">
+                                    <span class="example-label">Пример 2</span>
+                                    <div class="number-input">
+                                        <button class="number-btn minus" type="button">-</button>
+                                        <input name="number_2" type="number" class="number-field" value="0" min="0">
+                                        <button class="number-btn plus" type="button">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setting-options">
+                        <div class="option-item">
+                            <span class="option-label">Добавить ответы</span>
+                            <label class="checkbox-container">
+                                <input name="add_answers" type="checkbox" class="checkbox-input">
+                                <span class="checkbox-custom"></span>
+                            </label>
+                        </div>
+
+                        <div class="option-item">
+                            <span class="option-label">Добавить шапку экзамена</span>
+                            <label class="checkbox-container">
+                                <input name="add_header" type="checkbox" class="checkbox-input">
+                                <span class="checkbox-custom"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button class="generate-btn" type="submit">Сгенерировать</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>© 2025 LimGen. Все права защищены.</p>
+        <p>Разработано студентами <strong>РТУ МИРЭА</strong> | <a href="#">GitHub проекта</a></p>
+        <p><a href="https://t.me/AboutMathematics">О математике. ВУЗ😉</a> | Telegram канал</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const numberFields = document.querySelectorAll('.number-field');
+            const minusBtns = document.querySelectorAll('.number-btn.minus');
+            const plusBtns = document.querySelectorAll('.number-btn.plus');
+
+            minusBtns.forEach((btn, index) => {
+                btn.addEventListener('click', function () {
+                    let currentValue = parseInt(numberFields[index].value) || 0;
+                    const minValue = parseInt(numberFields[index].min) || 0;
+                    if (currentValue > minValue) {
+                        numberFields[index].value = currentValue - 1;
+                    }
+                });
+            });
+
+            plusBtns.forEach((btn, index) => {
+                btn.addEventListener('click', function () {
+                    let currentValue = parseInt(numberFields[index].value) || 0;
+                    numberFields[index].value = currentValue + 1;
+                });
+            });
+
+            numberFields.forEach(field => {
+                field.addEventListener('input', function () {
+                    let value = parseInt(this.value);
+                    const minValue = parseInt(this.min) || 0;
+                    if (isNaN(value) || value < minValue) {
+                        this.value = minValue;
+                    }
+                });
+
+                field.addEventListener('keydown', function (e) {
+                    if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        let currentValue = parseInt(this.value) || 0;
+                        this.value = currentValue + 1;
+                    } else if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        let currentValue = parseInt(this.value) || 0;
+                        const minValue = parseInt(this.min) || 0;
+                        if (currentValue > minValue) {
+                            this.value = currentValue - 1;
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

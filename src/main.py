@@ -12,6 +12,8 @@ from src.api import SessionDep
 from src.database import PrivateUser
 from src.utils import users as uu
 from src.utils import templates as ut
+from src.utils.generate_lim import generate_easy_predel
+from src.utils.create_file import create_pdf
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
@@ -127,3 +129,28 @@ def main(request: Request, session: SessionDep):
         return RedirectResponse(url="/login", status_code=302)
     
     return templates.TemplateResponse("main.html", {"request": request, "user": current_user})
+
+@app.get("/generate", response_class=HTMLResponse)
+def generate(request: Request, session: SessionDep):
+    current_user = get_current_user_from_request(request, session)
+
+    if not current_user:
+        return RedirectResponse(url="/login", status_code=302)
+
+    return templates.TemplateResponse("generate.html", {"request": request, "user": current_user})
+
+@app.post("/generate")
+async def generate(request: Request, session: SessionDep, number_1: int = Form(...), number_2: int = Form(...), add_answers: bool = Form(False), add_header: bool = Form(False)):
+    current_user = get_current_user_from_request(request, session)
+
+    if not current_user:
+        return RedirectResponse(url="/login", status_code=302)
+    problems = []
+    if number_1:
+        problems += await generate_easy_predel(number_1)
+    if number_2:
+        pass #тут будет ещё функция
+
+    await create_pdf(problems)
+
+    return problems

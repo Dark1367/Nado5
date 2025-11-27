@@ -1,11 +1,9 @@
-from generate_lim import *
 import asyncio
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
 
 
-async def create_pdf(num=5):
-    examples = await generate_easy_predel(num)
+async def create_pdf(examples: list):
     file = canvas.Canvas("examples.pdf", pagesize=A4)
 
     pos_x = 50
