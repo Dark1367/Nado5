@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta, timezone
 
 import jwt
-from fastapi import FastAPI, Form, Request
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi import FastAPI, Form, Request, Response
+from fastapi.responses import HTMLResponse, PlainTextResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 
@@ -31,7 +31,7 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
     else:
-        expire = datetime.now(timezone.utc) + timedelta(minutes=15)
+        expire = datetime.now(timezone.utc) + timedelta(minutes=155)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
@@ -136,21 +136,21 @@ def generate(request: Request, session: SessionDep):
 
     if not current_user:
         return RedirectResponse(url="/login", status_code=302)
-
-    return templates.TemplateResponse("generate.html", {"request": request, "user": current_user})
+    
+    tmpls = ut.get_user_templates(current_user.id, session)
+    return templates.TemplateResponse("generate.html", {"request": request, "user": current_user, "templates": tmpls})
 
 @app.post("/generate")
-async def generate(request: Request, session: SessionDep, number_1: int = Form(...), number_2: int = Form(...), add_answers: bool = Form(False), add_header: bool = Form(False)):
+async def generate(request: Request, session: SessionDep, data:dict):
     current_user = get_current_user_from_request(request, session)
 
     if not current_user:
         return RedirectResponse(url="/login", status_code=302)
     problems = []
-    if number_1:
-        problems += await generate_easy_predel(number_1)
-    if number_2:
-        pass #тут будет ещё функция
+    for k, v in data.items():
+        if k.startswith('number'):
+            problems += await generate_easy_predel(int(v))
 
     await create_pdf(problems)
 
-    return problems
+    return templates.TemplateResponse("problems_list.html", {"request": request, "user": current_user, "problems": problems})
