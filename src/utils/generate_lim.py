@@ -41,14 +41,14 @@ async def generate_easy_predel(count):
             if Nado not in B:
                 B.append(Nado)
             B.sort(reverse = True)
-        res = ''.join([f'{r.random_choice(['-', '+'])} {r.randint(2, 10)} x^{x}' if r.chance(70) else f'{r.random_choice(['-', '+'])} \sqrt{L}{r.randint(2, 10)} x^{x}{R}' for x in B])
+        res = ''.join([f'{r.random_choice(['-', '+'])} {r.randint(2, 10)} x^{x}' if r.chance(70) else f'{r.random_choice(['-', '+'])} \\sqrt{L}{r.randint(2, 10)} x^{x}{R}' for x in B])
         return res
 
     for _ in range(count):
         localstep = r.randint(4, 9)
-        predel = "\lim_{x\\to\infty}"
-        chislitel = f"{r.random_choice(['-', ''])} {r.randint(2, 10)} x^{localstep} {F(localstep)} {r.random_choice(['-', '+'])} {r.random_choice([r.randint(1, 20), r.randint(1, 20), '\cos x', '\sin x'])}"
-        znamenatel = f"{r.random_choice(['-', ''])} {r.randint(2, 10)} x^{localstep} {F(localstep)} {r.random_choice(['-', '+'])} {r.random_choice([r.randint(1, 20), r.randint(1, 20), '\cos x', '\sin x'])}"
+        predel = "\\lim_{x\\to\\infty}"
+        chislitel = f"{r.random_choice(['-', ''])} {r.randint(2, 10)} x^{localstep} {F(localstep)} {r.random_choice(['-', '+'])} {r.random_choice([r.randint(1, 20), r.randint(1, 20), '\\cos x', '\\sin x'])}"
+        znamenatel = f"{r.random_choice(['-', ''])} {r.randint(2, 10)} x^{localstep} {F(localstep)} {r.random_choice(['-', '+'])} {r.random_choice([r.randint(1, 20), r.randint(1, 20), '\\cos x', '\\sin x'])}"
         examples.append(predel + "\\frac" + L + chislitel + R + L + znamenatel + R)
 
     return examples
