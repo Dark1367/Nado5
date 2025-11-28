@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta, timezone
 
 import jwt
-from fastapi import FastAPI, Form, Request
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi import FastAPI, Form, Request, Response
+from fastapi.responses import HTMLResponse, PlainTextResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 
@@ -12,6 +12,8 @@ from src.api import SessionDep
 from src.database import PrivateUser
 from src.utils import users as uu
 from src.utils import templates as ut
+from src.utils.generate_lim import generate_easy_predel
+from src.utils.create_file import create_pdf
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
@@ -29,7 +31,7 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
     else:
-        expire = datetime.now(timezone.utc) + timedelta(minutes=15)
+        expire = datetime.now(timezone.utc) + timedelta(minutes=155)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
@@ -127,3 +129,28 @@ def main(request: Request, session: SessionDep):
         return RedirectResponse(url="/login", status_code=302)
     
     return templates.TemplateResponse("main.html", {"request": request, "user": current_user})
+
+@app.get("/generate", response_class=HTMLResponse)
+def generate(request: Request, session: SessionDep):
+    current_user = get_current_user_from_request(request, session)
+
+    if not current_user:
+        return RedirectResponse(url="/login", status_code=302)
+    
+    tmpls = ut.get_user_templates(current_user.id, session)
+    return templates.TemplateResponse("generate.html", {"request": request, "user": current_user, "templates": tmpls})
+
+@app.post("/generate")
+async def generate(request: Request, session: SessionDep, data:dict):
+    current_user = get_current_user_from_request(request, session)
+
+    if not current_user:
+        return RedirectResponse(url="/login", status_code=302)
+    problems = []
+    for k, v in data.items():
+        if k.startswith('number'):
+            problems += await generate_easy_predel(int(v))
+
+    await create_pdf(problems)
+
+    return templates.TemplateResponse("problems_list.html", {"request": request, "user": current_user, "problems": problems})

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../static/styles.css">
+  <title>LimGen | Настройки</title>
+</head>
+
+<body>
+
+  <header class="header">
+    <button class="logo" onclick="location.href='/main'" aria-label="На главную">
+      <img src="../static/logo.png" alt="Логотип">
+    </button>
+
+    <div class="nav-menu">
+      <a href="../AuthPage/index.html">Профиль</a>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="settings-container">
+      <form hx-post="/generate" hx-trigger="submit" hx-target="#results-box" hx-ext="json-enc" hx-swap="innerHTML">
+        <div class="settings-card">
+          <h1 class="settings-title">Настройки генерации</h1>
+
+          <div class="setting-item">
+            <div class="setting-text">
+              <span class="setting-label">1. Первый пример предела</span>
+              <div class="examples-list">
+                {% for template in templates %}
+                <div class="example-item">
+                  <span class="example-label">{{ template.title }}</span>
+                  <input name="title_{{template.id}}" type="hidden" value="{{ template.title }}">
+                  <div class="number-input">
+                    <button class="number-btn minus" type="button">-</button>
+                    <input name="number_{{template.id}}" type="number" class="number-field" value="0" min="0">
+                    <button class="number-btn plus" type="button">+</button>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+
+          <div class="setting-options">
+            <div class="option-item">
+              <span class="option-label">Добавить ответы</span>
+              <label class="checkbox-container">
+                <input name="add_answers" type="checkbox" class="checkbox-input">
+                <span class="checkbox-custom"></span>
+              </label>
+            </div>
+
+            <div class="option-item">
+              <span class="option-label">Добавить шапку экзамена</span>
+              <label class="checkbox-container">
+                <input name="add_header" type="checkbox" class="checkbox-input">
+                <span class="checkbox-custom"></span>
+              </label>
+            </div>
+          </div>
+
+          <button class="generate-btn" type="submit">Сгенерировать</button>
+        </div>
+      </form>
+    </div>
+    <div class="settings-card" id="results-box"></div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2025 LimGen. Все права защищены.</p>
+    <p>Разработано студентами <strong>РТУ МИРЭА</strong> | <a href="#">GitHub проекта</a></p>
+    <p><a href="https://t.me/AboutMathematics">О математике. ВУЗ😉</a> | Telegram канал</p>
+  </footer>
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+      },
+      svg: {
+        fontCache: 'global'
+      },
+      startup: {
+        typeset: false  // important: disable auto-typesetting on page load
+      }
+    };
+    document.addEventListener(
+      'DOMContentLoaded', function () {
+        const numberFields = document.querySelectorAll('.number-field');
+        const minusBtns = document.querySelectorAll('.number-btn.minus');
+        const plusBtns = document.querySelectorAll('.number-btn.plus');
+
+        minusBtns.forEach((btn, index) => {
+          btn.addEventListener('click', function () {
+            let currentValue = parseInt(numberFields[index].value) || 0;
+            const minValue = parseInt(numberFields[index].min) || 0;
+            if (currentValue > minValue) {
+              numberFields[index].value = currentValue - 1;
+            }
+          });
+        });
+
+        plusBtns.forEach((btn, index) => {
+          btn.addEventListener('click', function () {
+            let currentValue = parseInt(numberFields[index].value) || 0;
+            numberFields[index].value = currentValue + 1;
+          });
+        });
+
+        numberFields.forEach(field => {
+          field.addEventListener('input', function () {
+            let value = parseInt(this.value);
+            const minValue = parseInt(this.min) || 0;
+            if (isNaN(value) || value < minValue) {
+              this.value = minValue;
+            }
+          });
+
+          field.addEventListener('keydown', function (e) {
+            if (e.key === 'ArrowUp') {
+              e.preventDefault();
+              let currentValue = parseInt(this.value) || 0;
+              this.value = currentValue + 1;
+            } else if (e.key === 'ArrowDown') {
+              e.preventDefault();
+              let currentValue = parseInt(this.value) || 0;
+              const minValue = parseInt(this.min) || 0;
+              if (currentValue > minValue) {
+                this.value = currentValue - 1;
+              }
+            }
+          });
+        });
+      });
+    document.addEventListener(
+      'htmx:afterSettle', function (evt) {
+        // Only re-typeset the updated #results-box, not the whole page
+        const resultsBox = document.getElementById('results-box');
+        if (resultsBox && evt.detail.target === resultsBox) {
+          MathJax.typesetClear([resultsBox]); // Clear previous math (important for repeated submits)
+          MathJax.typeset([resultsBox]);      // Typeset new content
+        }
+      });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js"
+    integrity="sha384-/TgkGk7p307TH7EXJDuUlgG3Ce1UVolAOFopFekQkkXihi5u/6OCvVKyz1W+idaz"
+    crossorigin="anonymous"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+  <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/json-enc.js"></script>
+</body>
+
+</html>
