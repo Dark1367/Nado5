@@ -186,7 +186,7 @@ async def generate(request: Request, session: SessionDep, add_answers: bool = Fo
         if key.startswith("number_"):
             count = int(value)
             generated = await generate_easy_predel(count)
-            problems.append(generated)
+            problems.extend(generated)
 
     await create_pdf(problems)
 
