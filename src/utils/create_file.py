@@ -1,19 +1,27 @@
 import asyncio
-from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import A4
+import matplotlib.pyplot as plt
+from .generate_lim import generate_easy_predel
 
 
-async def create_pdf(examples: list):
-    file = canvas.Canvas("examples.pdf", pagesize=A4)
+async def create_pdf(problems):
+    plt.figure(figsize=(8.27, 11.69))
+    plt.axis("off")
+    formulas = problems
 
-    pos_x = 50
-    pos_y = 750
-    for i in examples:
-        file.drawString(pos_x, pos_y, i)
-        pos_y -= 20
+    y_position = 0.95  # Координаты верха, откуда начинать
 
-    file.save()
+    for i, formula in enumerate(formulas, 1):
+        plt.text(0.1, y_position, f"{i}) ${formula}$", fontsize=14, ha="left", va="top", transform=plt.gca().transAxes)
 
+        y_position -= 0.08  # Отступ между формулами
+
+        # У нас такое врядли будет, но если длина больше 100 символов, то будет перенос на некст строку
+        if len(formula) > 100:
+            y_position -= 0.02
+
+    plt.tight_layout()
+    plt.savefig("primer_list.pdf", bbox_inches="tight")
+    plt.close()
 
 if __name__ == "__main__":
     asyncio.run(create_pdf())

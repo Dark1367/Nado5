@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../static/styles_2.css">
+  <title>LimGen | Просмотр примеров</title>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+  <header class="header">
+    <button class="logo" onclick="window.location.href='../MainPage/index.html'" aria-label="На главную">
+      <img src="../static/logo.png" alt="Логотип">
+    </button>
+    <div class="nav-menu">
+      <a href="../AuthPage/index.html">Профиль</a>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="prosmotr-primerov" id="examples-container">
+      <div id="problems-list">
+        {% if problems %}
+          <h2 class="examples-title">Сгенерированные примеры</h2>
+          <div class="examples-list">
+            {% for problem in problems %}
+            <div class="example-item">
+              <span class="example-number">{{ loop.index }}.</span>
+              <div class="example-text">$$ {{ problem }} $$</div>
+            </div>
+            {% endfor %}
+          </div>
+          <div class="examples-info">
+            <p>Всего примеров: <span class="count">{{ problems|length }}</span></p>
+          </div>
+        {% else %}
+          <div class="no-examples">
+            <p class="placeholder">Тут будут наши примеры</p>
+            <p class="hint">Примеры пока не сгенерированы. Перейдите на главную страницу, чтобы создать их.</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="button-group">
+      <button class="btn-download" onclick="generatePDF()">
+        Скачать .PDF
+      </button>
+      <button class="btn-download" onclick="generateAnswersPDF()">
+        Скачать Ответы .PDF
+      </button>
+    </div>
+  </footer>
+  <script>
+    // MathJax конфигурация
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+      },
+      svg: {
+        fontCache: 'global'
+      },
+      startup: {
+        ready: () => {
+          MathJax.startup.defaultReady();
+          // Перерендер MathJax после загрузки
+          if (document.querySelector('.example-text')) {
+            MathJax.typesetPromise();
+          }
+        }
+      }
+    };
+  </script>
+</body>
+</html>

@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta, timezone
 
+import base64
+import json
 import jwt
 from fastapi import FastAPI, Form, Request, Response
 from fastapi.responses import HTMLResponse, PlainTextResponse, RedirectResponse
@@ -76,18 +78,30 @@ def login(request: Request, session: SessionDep, login: str = Form(...), passwor
     response.set_cookie("access_token", token, httponly=True)
     return response
 
+
 @app.get("/register", response_class=HTMLResponse)
 def register_page(request: Request):
     return templates.TemplateResponse("register.html", {"request": request})
 
+
 @app.post("/register", response_class=HTMLResponse)
-def register(request: Request, session: SessionDep, login: str = Form(...), password: str = Form(...), password_conf: str = Form(...)):
+def register(
+    request: Request,
+    session: SessionDep,
+    login: str = Form(...),
+    password: str = Form(...),
+    password_conf: str = Form(...),
+):
     if not uu.get_by_email(login, session) is None:
         return templates.TemplateResponse("register.html", {"request": request, "error": "Такой логин уже существует"})
     if len(login) < 4:
-        return templates.TemplateResponse("register.html", {"request": request, "error": "Логин должен содержать хотя-бы 4 символа"})
+        return templates.TemplateResponse(
+            "register.html", {"request": request, "error": "Логин должен содержать хотя-бы 4 символа"}
+        )
     if len(password) < 5:
-        return templates.TemplateResponse("register.html", {"request": request, "error": "Пароль должен содержать хотя-бы 5 символов"})
+        return templates.TemplateResponse(
+            "register.html", {"request": request, "error": "Пароль должен содержать хотя-бы 5 символов"}
+        )
     if password != password_conf:
         return templates.TemplateResponse("register.html", {"request": request, "error": "Пароли не соответствуют"})
     user = PrivateUser(email=login, password=password)
@@ -96,6 +110,7 @@ def register(request: Request, session: SessionDep, login: str = Form(...), pass
     response = RedirectResponse(url="/", status_code=302)
     response.set_cookie("access_token", token, httponly=True)
     return response
+
 
 @app.get("/logout")
 def logout(request: Request):
@@ -121,14 +136,16 @@ def account(request: Request, session: SessionDep, title: str = Form(...), repr:
     ut.create_template(ut.Template(title=title, repr=repr), session, user_id=current_user.id)
     return RedirectResponse(url="/account", status_code=302)
 
+
 @app.get("/main", response_class=HTMLResponse)
 def main(request: Request, session: SessionDep):
     current_user = get_current_user_from_request(request, session)
-    
+
     if not current_user:
         return RedirectResponse(url="/login", status_code=302)
-    
+
     return templates.TemplateResponse("main.html", {"request": request, "user": current_user})
+
 
 @app.get("/generate", response_class=HTMLResponse)
 def generate(request: Request, session: SessionDep):
@@ -136,21 +153,45 @@ def generate(request: Request, session: SessionDep):
 
     if not current_user:
         return RedirectResponse(url="/login", status_code=302)
-    
+
     tmpls = ut.get_user_templates(current_user.id, session)
     return templates.TemplateResponse("generate.html", {"request": request, "user": current_user, "templates": tmpls})
 
-@app.post("/generate")
-async def generate(request: Request, session: SessionDep, data:dict):
+
+@app.get("/primer_list", response_class=HTMLResponse)
+def primer_list(request: Request, session: SessionDep):
     current_user = get_current_user_from_request(request, session)
 
     if not current_user:
         return RedirectResponse(url="/login", status_code=302)
+
+    encoded = request.query_params.get("problems", "")
+    decoded = base64.urlsafe_b64decode(encoded).decode()
+    problems = json.loads(decoded)
+    print(problems)
+
+    return templates.TemplateResponse("primer_list.html", {"request": request, "user": current_user, "problems": problems})
+
+
+@app.post("/generate")
+async def generate(request: Request, session: SessionDep, add_answers: bool = Form(False), add_header: bool = Form(False)):
+    current_user = get_current_user_from_request(request, session)
+
+    if not current_user:
+        return RedirectResponse(url="/login", status_code=302)
+
+    form_data = await request.form()
     problems = []
-    for k, v in data.items():
-        if k.startswith('number'):
-            problems += await generate_easy_predel(int(v))
+
+    for key, value in form_data.items():
+        if key.startswith("number_"):
+            count = int(value)
+            generated = await generate_easy_predel(count)
+            problems.extend(generated)
 
     await create_pdf(problems)
 
-    return templates.TemplateResponse("problems_list.html", {"request": request, "user": current_user, "problems": problems})
+    problems_json = json.dumps(problems)
+    encoded = base64.urlsafe_b64encode(problems_json.encode()).decode()
+
+    return RedirectResponse(url=f"/primer_list?problems={encoded}", status_code=302)

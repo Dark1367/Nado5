@@ -22,7 +22,7 @@
 
   <main class="main">
     <div class="settings-container">
-      <form hx-post="/generate" hx-trigger="submit" hx-target="#results-box" hx-ext="json-enc" hx-swap="innerHTML">
+      <form id="generate-form" method="POST" action="/generate">
         <div class="settings-card">
           <h1 class="settings-title">Настройки генерации</h1>
 
@@ -67,7 +67,6 @@
         </div>
       </form>
     </div>
-    <div class="settings-card" id="results-box"></div>
   </main>
 
   <footer class="footer">
@@ -86,66 +85,66 @@
         fontCache: 'global'
       },
       startup: {
-        typeset: false  // important: disable auto-typesetting on page load
+        typeset: false
       }
     };
-    document.addEventListener(
-      'DOMContentLoaded', function () {
-        const numberFields = document.querySelectorAll('.number-field');
-        const minusBtns = document.querySelectorAll('.number-btn.minus');
-        const plusBtns = document.querySelectorAll('.number-btn.plus');
+    
+    document.addEventListener('DOMContentLoaded', function () {
+      const numberFields = document.querySelectorAll('.number-field');
+      const minusBtns = document.querySelectorAll('.number-btn.minus');
+      const plusBtns = document.querySelectorAll('.number-btn.plus');
 
-        minusBtns.forEach((btn, index) => {
-          btn.addEventListener('click', function () {
-            let currentValue = parseInt(numberFields[index].value) || 0;
-            const minValue = parseInt(numberFields[index].min) || 0;
-            if (currentValue > minValue) {
-              numberFields[index].value = currentValue - 1;
-            }
-          });
+      // Обработка кнопок минус/плюс
+      minusBtns.forEach((btn, index) => {
+        btn.addEventListener('click', function () {
+          let currentValue = parseInt(numberFields[index].value) || 0;
+          const minValue = parseInt(numberFields[index].min) || 0;
+          if (currentValue > minValue) {
+            numberFields[index].value = currentValue - 1;
+          }
+        });
+      });
+
+      plusBtns.forEach((btn, index) => {
+        btn.addEventListener('click', function () {
+          let currentValue = parseInt(numberFields[index].value) || 0;
+          numberFields[index].value = currentValue + 1;
+        });
+      });
+
+      numberFields.forEach(field => {
+        field.addEventListener('input', function () {
+          let value = parseInt(this.value);
+          const minValue = parseInt(this.min) || 0;
+          if (isNaN(value) || value < minValue) {
+            this.value = minValue;
+          }
         });
 
-        plusBtns.forEach((btn, index) => {
-          btn.addEventListener('click', function () {
-            let currentValue = parseInt(numberFields[index].value) || 0;
-            numberFields[index].value = currentValue + 1;
-          });
-        });
-
-        numberFields.forEach(field => {
-          field.addEventListener('input', function () {
-            let value = parseInt(this.value);
+        field.addEventListener('keydown', function (e) {
+          if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            let currentValue = parseInt(this.value) || 0;
+            this.value = currentValue + 1;
+          } else if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            let currentValue = parseInt(this.value) || 0;
             const minValue = parseInt(this.min) || 0;
-            if (isNaN(value) || value < minValue) {
-              this.value = minValue;
+            if (currentValue > minValue) {
+              this.value = currentValue - 1;
             }
-          });
-
-          field.addEventListener('keydown', function (e) {
-            if (e.key === 'ArrowUp') {
-              e.preventDefault();
-              let currentValue = parseInt(this.value) || 0;
-              this.value = currentValue + 1;
-            } else if (e.key === 'ArrowDown') {
-              e.preventDefault();
-              let currentValue = parseInt(this.value) || 0;
-              const minValue = parseInt(this.min) || 0;
-              if (currentValue > minValue) {
-                this.value = currentValue - 1;
-              }
-            }
-          });
+          }
         });
       });
-    document.addEventListener(
-      'htmx:afterSettle', function (evt) {
-        // Only re-typeset the updated #results-box, not the whole page
-        const resultsBox = document.getElementById('results-box');
-        if (resultsBox && evt.detail.target === resultsBox) {
-          MathJax.typesetClear([resultsBox]); // Clear previous math (important for repeated submits)
-          MathJax.typeset([resultsBox]);      // Typeset new content
-        }
-      });
+    });
+
+    document.addEventListener('htmx:afterSettle', function (evt) {
+      const resultsBox = document.getElementById('results-box');
+      if (resultsBox && evt.detail.target === resultsBox) {
+        MathJax.typesetClear([resultsBox]);
+        MathJax.typeset([resultsBox]);
+      }
+    });
   </script>
   <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js"
     integrity="sha384-/TgkGk7p307TH7EXJDuUlgG3Ce1UVolAOFopFekQkkXihi5u/6OCvVKyz1W+idaz"
