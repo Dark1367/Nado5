@@ -168,7 +168,6 @@ def primer_list(request: Request, session: SessionDep):
     encoded = request.query_params.get("problems", "")
     decoded = base64.urlsafe_b64decode(encoded).decode()
     problems = json.loads(decoded)
-    print(problems)
 
     return templates.TemplateResponse("primer_list.html", {"request": request, "user": current_user, "problems": problems})
 
@@ -180,14 +179,14 @@ async def generate(request: Request, session: SessionDep, add_answers: bool = Fo
     if not current_user:
         return RedirectResponse(url="/login", status_code=302)
 
-    form_data = await request.form()
+    data = await request.form()
     problems = []
 
-    for key, value in form_data.items():
+    for key, value in data.items():
         if key.startswith("number_"):
             count = int(value)
             generated = await generate_easy_predel(count)
-            problems.extend(generated)
+            problems.append(generated)
 
     await create_pdf(problems)
 
