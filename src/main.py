@@ -14,6 +14,7 @@ from src.utils import users as uu
 from src.utils import templates as ut
 from src.utils.generate_lim import generate_easy_predel
 from src.utils.create_file import create_pdf
+from src.models import GenerateRequest
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
@@ -141,16 +142,8 @@ def generate(request: Request, session: SessionDep):
     return templates.TemplateResponse("generate.html", {"request": request, "user": current_user, "templates": tmpls})
 
 @app.post("/generate")
-async def generate(request: Request, session: SessionDep, data:dict):
-    current_user = get_current_user_from_request(request, session)
+async def generate(data: GenerateRequest):
+    print(data.values)
+    print(data.add_header)
 
-    if not current_user:
-        return RedirectResponse(url="/login", status_code=302)
-    problems = []
-    for k, v in data.items():
-        if k.startswith('number'):
-            problems += await generate_easy_predel(int(v))
-
-    await create_pdf(problems)
-
-    return templates.TemplateResponse("problems_list.html", {"request": request, "user": current_user, "problems": problems})
+    return {"status": "ok", "received": data}
