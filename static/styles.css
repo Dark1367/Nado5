@@ -359,8 +359,8 @@ body {
 .setting-item {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 2rem;
+    align-items: center;
+    margin-bottom: 1rem;
     padding: 1rem;
     background: #f8f9fa;
     border-radius: 8px;
@@ -371,8 +371,6 @@ body {
     font-size: 1.1rem;
     font-weight: 500;
     color: #333;
-    margin-bottom: 1rem;
-    display: block;
 }
 
 .examples-list {
@@ -403,19 +401,23 @@ body {
 .number-input {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 5px;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .number-field {
-    width: 80px;
+    width: 60px;
     height: 40px;
     text-align: center;
-    border: 2px solid #ddd;
-    border-radius: 6px;
+    border: 1px solid #e0e0e0;
     font-size: 1rem;
     font-weight: 500;
     color: #333;
-    background: white;
+    background-color: white;
+    outline: none;
 }
 
 .number-field::-webkit-outer-spin-button,
@@ -427,11 +429,11 @@ body {
 .number-btn {
     width: 40px;
     height: 40px;
-    border: 2px solid #2196F3;
-    background: #2196F3;
+    background-color: #2196F3;
+    /* Синий фон */
     color: white;
-    border-radius: 6px;
-    font-size: 1.2rem;
+    border: none;
+    font-size: 1.5rem;
     font-weight: bold;
     cursor: pointer;
     display: flex;
@@ -441,9 +443,8 @@ body {
 }
 
 .number-btn:hover {
-    background: #1976D2;
-    border-color: #1976D2;
-    transform: scale(1.05);
+    background-color: #1976D2;
+    /* Темно-синий при наведении */
 }
 
 .number-btn:active {

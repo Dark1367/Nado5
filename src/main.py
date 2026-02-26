@@ -16,6 +16,7 @@ from src.utils import users as uu
 from src.utils import templates as ut
 from src.utils.generate_lim import generate_easy_predel
 from src.utils.create_file import create_pdf
+from src.models import GenerateRequest
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
@@ -173,22 +174,13 @@ def primer_list(request: Request, session: SessionDep):
 
 
 @app.post("/generate")
-async def generate(request: Request, session: SessionDep, add_answers: bool = Form(False), add_header: bool = Form(False)):
+async def generate(request: Request, data: GenerateRequest):
     current_user = get_current_user_from_request(request, session)
 
     if not current_user:
         return RedirectResponse(url="/login", status_code=302)
 
-    data = await request.form()
-    problems = []
+    print(data.values)
+    print(data.add_header)
 
-    for k, v in data.items():
-        if k.startswith("number_"):
-            problems += await generate_easy_predel(int(v))
-
-    await create_pdf(problems)
-
-    problems_json = json.dumps(problems)
-    encoded = base64.urlsafe_b64encode(problems_json.encode()).decode()
-
-    return RedirectResponse(url=f"/primer_list?problems={encoded}", status_code=302)
+    return {"status": "ok", "received": data}
