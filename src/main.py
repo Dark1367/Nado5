@@ -4,7 +4,7 @@ import base64
 import json
 import jwt
 from fastapi import FastAPI, Form, Request, Response
-from fastapi.responses import HTMLResponse, PlainTextResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, PlainTextResponse, RedirectResponse, FileResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 
@@ -14,9 +14,9 @@ from src.api import SessionDep
 from src.database import PrivateUser
 from src.utils import users as uu
 from src.utils import templates as ut
-from src.utils.generate_lim import generate_easy_predel
 from src.utils.create_file import create_pdf
 from src.models import GenerateRequest
+from src.utils.generate_lim import generate_lims
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
@@ -174,13 +174,17 @@ def primer_list(request: Request, session: SessionDep):
 
 
 @app.post("/generate")
-async def generate(request: Request, data: GenerateRequest):
+async def generate(request: Request, session: SessionDep, data: GenerateRequest):
     current_user = get_current_user_from_request(request, session)
 
     if not current_user:
         return RedirectResponse(url="/login", status_code=302)
 
-    print(data.values)
+    problems = await generate_lims(data.values)
+    create_pdf(problems)
+
+    print(problems)
+
     print(data.add_header)
 
-    return {"status": "ok", "received": data}
+    return HTMLResponse(json.dumps(problems))
