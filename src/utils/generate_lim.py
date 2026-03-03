@@ -41,8 +41,6 @@ async def generate_lims(counts):
     type_six = [generate_lim_6_1, generate_lim_6_2, generate_lim_6_3]
     type_seven = [generate_lim_7_1, generate_lim_7_2]
 
-    print(counts)
-
     primers += await rand.choice(type_one)(counts[0])
     primers += await rand.choice(type_two)(counts[1])
     primers += await rand.choice(type_three)(counts[2])

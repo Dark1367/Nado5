@@ -183,8 +183,8 @@ async def generate(request: Request, session: SessionDep, data: GenerateRequest)
     problems = await generate_lims(data.values)
     create_pdf(problems)
 
-    print(problems)
+    json_data = json.dumps(problems)
+    encoded = base64.urlsafe_b64encode(json_data.encode()).decode()
 
-    print(data.add_header)
-
-    return HTMLResponse(json.dumps(problems))
+    url = f"/primer_list?problems={encoded}"
+    return RedirectResponse(url=url, status_code=302)
