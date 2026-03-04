@@ -1,12 +1,11 @@
 from src.utils.Random import Random
 import os
-rnd = Random(str(os.urandom(8)))
 
-async def generate_limit():
-    a1 = rnd.randint(1, 5)
-    d1 = rnd.randint(1, 4)
-    a2 = rnd.randint(3, 8)
-    d2 = rnd.randint(1, 3)
+async def generate_limit(rand):
+    a1 = rand.randint(1, 5)
+    d1 = rand.randint(1, 4)
+    a2 = rand.randint(3, 8)
+    d2 = rand.randint(1, 3)
     
     c1 = a1 - d1
     if c1 == 0:
@@ -41,8 +40,8 @@ async def generate_limit():
     primer = f"\\lim_{{n \\to \\infty}} \\frac{{{num_str}}}{{{den_str}}}"
     return primer
 
-async def generate_lim_7_2(n):
+async def generate_lim_7_2(rand, n):
     primer = []
     for _ in range(n):
-        primer.append(await generate_limit())
+        primer.append(await generate_limit(rand))
     return primer

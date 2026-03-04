@@ -1,9 +1,7 @@
 from src.utils.Random import Random
 import os
 
-rand = Random(str(os.urandom(8)))
-
-async def generate_log_power_limit():
+async def generate_log_power_limit(rand):
     A = rand.randint(-20, 20)
     while A == 0 or A == 1: 
         A = rand.randint(-20, 20)
@@ -44,7 +42,7 @@ async def generate_log_power_limit():
     
     return limit_str
 
-async def generate_log_power_limit_variations():
+async def generate_log_power_limit_variations(rand):
     variation = rand.randint(1, 3)
     
   
@@ -147,7 +145,7 @@ async def generate_log_power_limit_variations():
     
     return limit_str
 
-async def generate_log_power_limit_with_composition():
+async def generate_log_power_limit_with_composition(rand):
     variation = rand.randint(1, 3)
   
     p = rand.randint(1, 5)
@@ -225,7 +223,7 @@ async def generate_log_power_limit_with_composition():
     
     return limit_str
 
-async def generate_log_power_limit_with_trig():
+async def generate_log_power_limit_with_trig(rand):
     variation = rand.randint(1, 2)
     
    
@@ -276,22 +274,22 @@ async def generate_log_power_limit_with_trig():
     
     return limit_str
 
-async def gen_three_six_lim(n, variations=True):
+async def gen_three_six_lim(rand, n, variations=True):
     primers = []
     
     for _ in range(n):
         if variations:
             choice = rand.randint(1, 4)
             if choice == 1:
-                primer = await generate_log_power_limit()
+                primer = await generate_log_power_limit(rand)
             elif choice == 2:
-                primer = await generate_log_power_limit_variations()
+                primer = await generate_log_power_limit_variations(rand)
             elif choice == 3:
-                primer = await generate_log_power_limit_with_composition()
+                primer = await generate_log_power_limit_with_composition(rand)
             else:
-                primer = await generate_log_power_limit_with_trig()
+                primer = await generate_log_power_limit_with_trig(rand)
         else:
-            primer = await generate_log_power_limit()
+            primer = await generate_log_power_limit(rand)
         
         primers.append(primer)
     

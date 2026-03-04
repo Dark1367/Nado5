@@ -1,9 +1,7 @@
 from src.utils.Random import Random
 import os
 
-rand = Random(str(os.urandom(8)))
-
-async def chlen(n=None, force_nonzero=False):
+async def chlen(rand, n=None, force_nonzero=False):
     if n is None:
         type = rand.randint(1, 3)
     elif n == 0:
@@ -54,7 +52,7 @@ async def chlen(n=None, force_nonzero=False):
 
     return s, deg, str(mult)
 
-async def mnogochlen(max_n=None, guaranteed_degree=None):
+async def mnogochlen(rand, max_n=None, guaranteed_degree=None):
     if max_n is None:
         max_n = rand.randint(4, 6)
     
@@ -63,16 +61,16 @@ async def mnogochlen(max_n=None, guaranteed_degree=None):
     nums = {}
 
     if guaranteed_degree is not None:
-        s, deg, mult = await chlen(guaranteed_degree, force_nonzero=True)
+        s, deg, mult = await chlen(rand, guaranteed_degree, force_nonzero=True)
     else:
-        s, deg, mult = await chlen(max_n, force_nonzero=True)
+        s, deg, mult = await chlen(rand, max_n, force_nonzero=True)
     
     deg = str(deg)
     parts.append(s)
     nums[deg] = mult
 
     for i in range(n):
-        s, deg, mult = await chlen(None, force_nonzero=False)
+        s, deg, mult = await chlen(rand, None, force_nonzero=False)
         deg = str(deg)
         parts.append(s)
         if deg in nums:
@@ -93,7 +91,7 @@ async def mnogochlen(max_n=None, guaranteed_degree=None):
     
     return mnogoch
 
-async def generate_root_power_zero_limit():
+async def generate_root_power_zero_limit(rand):
 
     r = rand.randint(2, 5)
     
@@ -108,7 +106,7 @@ async def generate_root_power_zero_limit():
     if rand.chance(70):
   
         poly_degree = rand.randint(2, 5)
-        P_x = await mnogochlen(guaranteed_degree=poly_degree)
+        P_x = await mnogochlen(rand, guaranteed_degree=poly_degree)
         
       
         if rand.chance(50):
@@ -125,7 +123,7 @@ async def generate_root_power_zero_limit():
   
     else:
      
-        P_x = await mnogochlen()
+        P_x = await mnogochlen(rand)
     
   
     P_x = P_x.replace("++", "+").replace("+-", "-")
@@ -159,7 +157,7 @@ async def generate_root_power_zero_limit():
     
     return limit_str
 
-async def generate_root_power_zero_limit_variations():
+async def generate_root_power_zero_limit_variations(rand):
     variation = rand.randint(1, 3)
     
     r = rand.randint(2, 5)
@@ -169,14 +167,14 @@ async def generate_root_power_zero_limit_variations():
         b = rand.randint(-10, 10)
     
     if variation == 1:
-        return await generate_root_power_zero_limit()
+        return await generate_root_power_zero_limit(rand)
     
     elif variation == 2:
         m = rand.randint(2, 6) 
         a = rand.randint(2, 10)  
         
    
-        lower_poly = await mnogochlen(max_n=m-1)
+        lower_poly = await mnogochlen(rand, max_n=m-1)
         
      
         if a == 1:
@@ -193,8 +191,8 @@ async def generate_root_power_zero_limit_variations():
         num_degree = rand.randint(2, 4)
         den_degree = rand.randint(2, 4)
         
-        P_num = await mnogochlen(guaranteed_degree=num_degree)
-        P_den = await mnogochlen(guaranteed_degree=den_degree)
+        P_num = await mnogochlen(rand, guaranteed_degree=num_degree)
+        P_den = await mnogochlen(rand, guaranteed_degree=den_degree)
         
         P_x = f"\\frac{{{P_num}}}{{{P_den}}}"
     
@@ -221,14 +219,14 @@ async def generate_root_power_zero_limit_variations():
     
     return limit_str
 
-async def gen_three_three_lim(n, variations=True):
+async def gen_three_three_lim(rand, n, variations=True):
     primers = []
     
     for _ in range(n):
         if variations and rand.chance(50): 
-            primer = await generate_root_power_zero_limit_variations()
+            primer = await generate_root_power_zero_limit_variations(rand)
         else:  
-            primer = await generate_root_power_zero_limit()
+            primer = await generate_root_power_zero_limit(rand)
         
         primers.append(primer)
     

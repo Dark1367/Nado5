@@ -3,8 +3,6 @@ import os
 
 #тип 1.1.1 и 1.1.2
 
-rand = Random(str(os.urandom(8)))
-
 async def try_calc(a, b, op):
     if op == "+":
         try:
@@ -22,7 +20,7 @@ async def try_calc(a, b, op):
         except:
             return f"\\frac{{{a}}}{{{b}}}"
 
-async def chlen(n=None, allow_trig=False, force_nonzero=False):
+async def chlen(rand, n=None, allow_trig=False, force_nonzero=False):
     if n is None:
         type = rand.randint(1, 4 if allow_trig else 3)
     elif n == 0:
@@ -80,7 +78,7 @@ async def chlen(n=None, allow_trig=False, force_nonzero=False):
 
     return s, deg, str(mult)
 
-async def mnogochlen(max_n=None, guaranteed_degree=None, allow_trig=False):
+async def mnogochlen(rand, max_n=None, guaranteed_degree=None, allow_trig=False):
     if max_n is None:
         max_n = rand.randint(4, 6)
     
@@ -89,16 +87,16 @@ async def mnogochlen(max_n=None, guaranteed_degree=None, allow_trig=False):
     nums = dict()
 
     if guaranteed_degree is not None:
-        s, deg, mult = await chlen(guaranteed_degree, allow_trig=False, force_nonzero=True)
+        s, deg, mult = await chlen(rand, guaranteed_degree, allow_trig=False, force_nonzero=True)
     else:
-        s, deg, mult = await chlen(max_n, allow_trig=False, force_nonzero=True)
+        s, deg, mult = await chlen(rand, max_n, allow_trig=False, force_nonzero=True)
     
     deg = str(deg)
     parts.append(s)
     nums[deg] = mult
 
     for i in range(n):
-        s, deg, mult = await chlen(None, allow_trig=allow_trig, force_nonzero=False)
+        s, deg, mult = await chlen(rand, None, allow_trig=allow_trig, force_nonzero=False)
         deg = str(deg)
         parts.append(s)
         if deg in nums:
@@ -120,7 +118,7 @@ async def mnogochlen(max_n=None, guaranteed_degree=None, allow_trig=False):
 
     return mnogoch, m_deg, m_mult
 
-async def generate_linear_exponent():
+async def generate_linear_exponent(rand):
     D = rand.randint(-10, 10)
     while D == 0:
         D = rand.randint(-10, 10)
@@ -134,7 +132,7 @@ async def generate_linear_exponent():
     else:
         return f"{D}x{E}"
 
-async def inf_frac_inf():
+async def inf_frac_inf(rand):
     diff_choice = rand.choice([1, 1, 1, 2, 0])
     
     if diff_choice == 0:
@@ -148,8 +146,8 @@ async def inf_frac_inf():
         deg_den = rand.randint(3, 6)
         deg_num = deg_den - 2
     
-    chislitel_str, actual_deg_num_str, coef_num = await mnogochlen(max_n=deg_num, guaranteed_degree=deg_num, allow_trig=False)
-    znamenatel_str, actual_deg_den_str, coef_den = await mnogochlen(max_n=deg_den, guaranteed_degree=deg_den, allow_trig=False)
+    chislitel_str, actual_deg_num_str, coef_num = await mnogochlen(rand, max_n=deg_num, guaranteed_degree=deg_num, allow_trig=False)
+    znamenatel_str, actual_deg_den_str, coef_den = await mnogochlen(rand, max_n=deg_den, guaranteed_degree=deg_den, allow_trig=False)
     
     try:
         actual_deg_num = float(actual_deg_num_str) if '/' in actual_deg_num_str else int(float(actual_deg_num_str))
@@ -173,7 +171,7 @@ async def inf_frac_inf():
     
     diff = actual_deg_den - actual_deg_num
     
-    stepen_str = await generate_linear_exponent()
+    stepen_str = await generate_linear_exponent(rand)
 
     if rand.chance(30):
         D_new = rand.randint(-20, 20)
@@ -192,9 +190,9 @@ async def inf_frac_inf():
     primer = f"\\lim_{{x \\to \\infty}}(1{sign}\\frac{{{chislitel_str}}}{{{znamenatel_str}}})^{{{stepen_str}}}"
     return primer
 
-async def gen_one_one_lim(n):
+async def gen_one_one_lim(rand, n):
     primers = []
     for _ in range(n):
-        primer = await inf_frac_inf()
+        primer = await inf_frac_inf(rand)
         primers.append(primer)
     return primers

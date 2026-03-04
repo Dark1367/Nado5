@@ -1,8 +1,6 @@
 from src.utils.Random import Random
 import os
 
-rand = Random(str(os.urandom(8)))
-
 async def try_calc(a, b, op):
     if op == "+":
         try:
@@ -20,7 +18,7 @@ async def try_calc(a, b, op):
         except:
             return f"\\frac{{{a}}}{{{b}}}"
 
-async def chlen(n=None, allow_trig=False, force_nonzero=False):
+async def chlen(rand, n=None, allow_trig=False, force_nonzero=False):
     if n is None:
         type = rand.randint(1, 4 if allow_trig else 3)
     elif n == 0:
@@ -78,7 +76,7 @@ async def chlen(n=None, allow_trig=False, force_nonzero=False):
 
     return s, deg, str(mult)
 
-async def mnogochlen(max_n=None, guaranteed_degree=None, allow_trig=False):
+async def mnogochlen(rand, max_n=None, guaranteed_degree=None, allow_trig=False):
     if max_n is None:
         max_n = rand.randint(1, 4)
     
@@ -87,16 +85,16 @@ async def mnogochlen(max_n=None, guaranteed_degree=None, allow_trig=False):
     nums = dict()
 
     if guaranteed_degree is not None:
-        s, deg, mult = await chlen(guaranteed_degree, allow_trig=False, force_nonzero=True)
+        s, deg, mult = await chlen(rand, guaranteed_degree, allow_trig=False, force_nonzero=True)
     else:
-        s, deg, mult = await chlen(max_n, allow_trig=False, force_nonzero=True)
+        s, deg, mult = await chlen(rand, max_n, allow_trig=False, force_nonzero=True)
     
     deg = str(deg)
     parts.append(s)
     nums[deg] = mult
 
     for i in range(n):
-        s, deg, mult = await chlen(None, allow_trig=allow_trig, force_nonzero=False)
+        s, deg, mult = await chlen(rand, None, allow_trig=allow_trig, force_nonzero=False)
         deg = str(deg)
         parts.append(s)
         if deg in nums:
@@ -118,7 +116,7 @@ async def mnogochlen(max_n=None, guaranteed_degree=None, allow_trig=False):
 
     return mnogoch, m_deg, m_mult
 
-async def generate_exponent(allow_trig=False):
+async def generate_exponent(rand, allow_trig=False):
     choice = rand.choice(["linear", "constant", "reciprocal", "with_trig"])
     
     if choice == "constant":
@@ -154,7 +152,7 @@ async def generate_exponent(allow_trig=False):
         else:
             return f"{D}x{E}"
 
-async def generate_limit_point():
+async def generate_limit_point(rand):
     choices = [
         ("\\infty", "inf"),
         ("0", "zero"),
@@ -162,16 +160,16 @@ async def generate_limit_point():
     ]
     return rand.choice(choices)
 
-async def generate_general_limit():
-    a, a_type = await generate_limit_point()
+async def generate_general_limit(rand):
+    a, a_type = await generate_limit_point(rand)
     
     use_trig_in_PQ = rand.chance(30)
     use_trig_in_exp = rand.chance(20)  
     
-    P_str, deg_P_str, coef_P = await mnogochlen(allow_trig=use_trig_in_PQ)
-    Q_str, deg_Q_str, coef_Q = await mnogochlen(allow_trig=use_trig_in_PQ)
+    P_str, deg_P_str, coef_P = await mnogochlen(rand, allow_trig=use_trig_in_PQ)
+    Q_str, deg_Q_str, coef_Q = await mnogochlen(rand, allow_trig=use_trig_in_PQ)
     
-    R_str = await generate_exponent(allow_trig=use_trig_in_exp)
+    R_str = await generate_exponent(rand, allow_trig=use_trig_in_exp)
     
     if rand.chance(40): 
         pass
@@ -180,8 +178,8 @@ async def generate_general_limit():
         
         if unc_type == "1^inf" and a_type == "inf":
             deg = rand.randint(1, 4)
-            P_str, _, _ = await mnogochlen(guaranteed_degree=deg, allow_trig=False)
-            Q_str, _, _ = await mnogochlen(guaranteed_degree=deg, allow_trig=False)
+            P_str, _, _ = await mnogochlen(rand, guaranteed_degree=deg, allow_trig=False)
+            Q_str, _, _ = await mnogochlen(rand, guaranteed_degree=deg, allow_trig=False)
             R_str = f"{rand.randint(2, 10)}x"
         
         elif unc_type == "0^0" and a_type == "finite":
@@ -193,8 +191,8 @@ async def generate_general_limit():
         elif unc_type == "inf^0" and a_type == "inf":
             deg_P = rand.randint(3, 5)
             deg_Q = rand.randint(1, 2)
-            P_str, _, _ = await mnogochlen(guaranteed_degree=deg_P, allow_trig=False)
-            Q_str, _, _ = await mnogochlen(guaranteed_degree=deg_Q, allow_trig=False)
+            P_str, _, _ = await mnogochlen(rand, guaranteed_degree=deg_P, allow_trig=False)
+            Q_str, _, _ = await mnogochlen(rand, guaranteed_degree=deg_Q, allow_trig=False)
             R_str = f"\\frac{{1}}{{x}}"
     
     if a == "\\infty":
@@ -205,10 +203,10 @@ async def generate_general_limit():
     primer = f"{limit_expr}\\left(\\frac{{{P_str}}}{{{Q_str}}}\\right)^{{{{{R_str}}}}}"
     return primer
 
-async def gen_one_two_lim(n):
+async def gen_one_two_lim(rand, n):
     primers = []
     for _ in range(n):
-        primer = await generate_general_limit()
+        primer = await generate_general_limit(rand)
         primers.append(primer)
     return primers
 

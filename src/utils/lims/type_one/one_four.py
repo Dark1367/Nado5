@@ -1,9 +1,7 @@
 from src.utils.Random import Random
 import os
 
-rand = Random(str(os.urandom(8)))
-
-async def generate_exp_limit():
+async def generate_exp_limit(rand):
     A = rand.randint(-5, 5)
     while A == 0:
         A = rand.randint(-5, 5)
@@ -37,10 +35,10 @@ async def generate_exp_limit():
     primer = f"\\lim_{{x \\to 0}}\\left(\\frac{{{exp1}+{exp2}}}{{{denominator}}}\\right)^{{{exponent}}}"
     return primer
 
-async def gen_one_four_lim(n):
+async def gen_one_four_lim(rand, n):
     primers = []
     for _ in range(n):
-        primer = await generate_exp_limit()
+        primer = await generate_exp_limit(rand)
         primers.append(primer)
     return primers
 

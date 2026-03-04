@@ -1,9 +1,7 @@
 from src.utils.Random import Random
 import os
 
-rand = Random(str(os.urandom(8)))
-
-async def generate_log_limit():
+async def generate_log_limit(rand):
     S = rand.randint(1, 10)  
     
     A = rand.randint(-5, 5)
@@ -36,9 +34,9 @@ async def generate_log_limit():
     primer = f"\\lim_{{x \\to 1}}\\left(\\frac{{\\ln\\left({arg1}\\right)}}{{\\ln\\left({arg2}\\right)}}\\right)^{{\\frac{{1}}{{x-1}}}}"
     return primer, A, B, C, D
 
-async def gen_one_five_lim(n):
+async def gen_one_five_lim(rand, n):
     primers = []
     for _ in range(n):
-        primer, A, B, C, D = await generate_log_limit()
+        primer, A, B, C, D = await generate_log_limit(rand)
         primers.append(primer)
     return primers

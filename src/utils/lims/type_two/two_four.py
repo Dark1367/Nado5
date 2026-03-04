@@ -1,9 +1,7 @@
 from src.utils.Random import Random
 import os
 
-rand = Random(str(os.urandom(8)))
-
-async def generate_coefficient():
+async def generate_coefficient(rand):
     coeff = rand.randint(-10, 10)
     while coeff == 0:
         coeff = rand.randint(-10, 10)
@@ -15,8 +13,8 @@ async def generate_coefficient():
     else:
         return str(coeff)
 
-async def generate_term_with_degree(degree):
-    coeff = await generate_coefficient()
+async def generate_term_with_degree(rand, degree):
+    coeff = await generate_coefficient(rand)
     
     if degree == 0:
         return coeff
@@ -31,7 +29,7 @@ async def generate_term_with_degree(degree):
     else:
         return f"{coeff}x^{{{int(degree)}}}"
 
-async def generate_polynomial_base():
+async def generate_polynomial_base(rand):
     degree_type = rand.choice([1, 2, 3, 4])
     
     if degree_type == 1:  
@@ -52,8 +50,8 @@ async def generate_polynomial_base():
         m = rand.choice([0, 1, 2, 0.5])
         n = m
     
-    term1 = await generate_term_with_degree(m)
-    term2 = await generate_term_with_degree(n)
+    term1 = await generate_term_with_degree(rand, m)
+    term2 = await generate_term_with_degree(rand, n)
 
     min_deg = min(m, n) if isinstance(m, (int, float)) and isinstance(n, (int, float)) else 0
     
@@ -65,15 +63,15 @@ async def generate_polynomial_base():
     num_extra = rand.randint(0, 2)
     for _ in range(num_extra):
         extra_deg = min_deg + rand.choice([2, 3, 4, 0.5, 1.5])
-        extra_term = await generate_term_with_degree(extra_deg)
+        extra_term = await generate_term_with_degree(rand, extra_deg)
         if not extra_term.startswith('-') and not extra_term.startswith('+'):
             base_expression += "+"
         base_expression += extra_term
     
     return base_expression
 
-async def generate_exponent():
-    b = await generate_coefficient()
+async def generate_exponent(rand):
+    b = await generate_coefficient(rand)
     
     p_type = rand.choice([1, 2, 3, 4, 5])
     
@@ -104,10 +102,10 @@ async def generate_exponent():
     else:  
         return str(b)
 
-async def generate_polynomial_power_limit():
-    base_expr = await generate_polynomial_base()
+async def generate_polynomial_power_limit(rand):
+    base_expr = await generate_polynomial_base(rand)
     
-    exponent = await generate_exponent()
+    exponent = await generate_exponent(rand)
     
     limit_type = rand.choice([1, 2, 3])
     
@@ -121,11 +119,11 @@ async def generate_polynomial_power_limit():
     
     return primer
 
-async def gen_two_four_lim(n):
+async def gen_two_four_lim(rand, n):
     primers = []
     
     for i in range(n):
-        primer = await generate_polynomial_power_limit()
+        primer = await generate_polynomial_power_limit(rand)
         primers.append(primer)
     
     return primers

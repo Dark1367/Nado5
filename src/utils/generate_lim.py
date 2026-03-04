@@ -29,9 +29,8 @@ from src.utils.lims.type_seven.seven_one import generate_lim_7_1
 from src.utils.lims.type_seven.seven_two import generate_lim_7_2
 import os
 
-rand = Random(str(os.urandom(8)))
-
-async def generate_lims(counts):
+async def generate_lims(counts, seed):
+    rand = Random(seed)
     primers = []
     type_one = [gen_one_one_lim, gen_one_two_lim, gen_one_three_lim, gen_one_four_lim, gen_one_five_lim]
     type_two = [gen_two_one_lim, gen_two_two_lim, gen_two_three_lim, gen_two_four_lim, gen_two_five_lim]
@@ -41,12 +40,12 @@ async def generate_lims(counts):
     type_six = [generate_lim_6_1, generate_lim_6_2, generate_lim_6_3]
     type_seven = [generate_lim_7_1, generate_lim_7_2]
 
-    primers += await rand.choice(type_one)(counts[0])
-    primers += await rand.choice(type_two)(counts[1])
-    primers += await rand.choice(type_three)(counts[2])
-    primers += await rand.choice(type_four)(counts[3])
-    primers += await type_five(counts[4])
-    primers += await rand.choice(type_six)(counts[5])
-    primers += await rand.choice(type_seven)(counts[6])
+    primers += await rand.choice(type_one)(rand, counts[0])
+    primers += await rand.choice(type_two)(rand, counts[1])
+    primers += await rand.choice(type_three)(rand, counts[2])
+    primers += await rand.choice(type_four)(rand, counts[3])
+    primers += await type_five(rand, counts[4])
+    primers += await rand.choice(type_six)(rand, counts[5])
+    primers += await rand.choice(type_seven)(rand, counts[6])
 
     return primers

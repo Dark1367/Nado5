@@ -160,30 +160,36 @@
         });
     </script>
     <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const generateBtn = document.querySelector('.generate-btn');
+        document.addEventListener('DOMContentLoaded', function () {
+            const generateBtn = document.querySelector('.generate-btn');
 
-        generateBtn.addEventListener('click', async function () {
-            const numberFields = document.querySelectorAll('.number-field');
-            const checkbox = document.querySelector('.checkbox-input');
+            generateBtn.addEventListener('click', async function () {
+                const numberFields = document.querySelectorAll('.number-field');
+                const checkbox = document.querySelector('.checkbox-input');
 
-            const data = {
-                values: Array.from(numberFields).map(field => parseInt(field.value) || 0),
-                add_header: checkbox.checked
-            };
+                const data = {
+                    values: Array.from(numberFields).map(field => parseInt(field.value) || 0),
+                    add_header: checkbox.checked
+                };
 
-            const response = await fetch('/generate', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data),
+                    redirect: 'follow' // автоматически следовать за редиректом
+                });
+
+                // После редиректа response.url будет содержать новый URL
+                if (response.redirected) {
+                    window.location.href = response.url; // принудительно переходим
+                } else {
+                    const result = await response.json();
+                    console.log(result);
+                }
             });
-
-            const result = await response.json();
-            console.log(result);
         });
-    });
     </script>
 </body>
 

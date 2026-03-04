@@ -1,6 +1,5 @@
 from src.utils.Random import Random
 import os
-rnd = Random(str(os.urandom(8)))
 
 async def fmt_exp(exp):
     if exp == 0:
@@ -20,15 +19,15 @@ async def fmt_term(coef, base, exp):
     else:
         return f"{coef} \\cdot {base}^{{{exp_str}}}"
 
-async def generate_limit():
+async def generate_limit(rand):
     bases = [2, 3, 4, 5, 6, 7, 8, 9, 10]
     
-    base_num = bases[rnd.randint(0, len(bases)-1)]
+    base_num = bases[rand.randint(0, len(bases)-1)]
     
-    coef_num = rnd.randint(1, 8)
-    exp_num = rnd.randint(-4, 4)
+    coef_num = rand.randint(1, 8)
+    exp_num = rand.randint(-4, 4)
     
-    const_num = rnd.randint(1, 12)
+    const_num = rand.randint(1, 12)
     
     inner = await fmt_term(coef_num, base_num, exp_num)
     
@@ -38,17 +37,17 @@ async def generate_limit():
         inner += f" - {abs(const_num)}"
     numerator = f"\\sqrt{{{inner}}}"
     
-    base_den1 = bases[rnd.randint(0, len(bases)-1)]
-    coef_den1 = rnd.randint(-8, 8)
+    base_den1 = bases[rand.randint(0, len(bases)-1)]
+    coef_den1 = rand.randint(-8, 8)
     while coef_den1 == 0:
-        coef_den1 = rnd.randint(-8, 8)
-    exp_den1 = rnd.randint(-4, 4)
+        coef_den1 = rand.randint(-8, 8)
+    exp_den1 = rand.randint(-4, 4)
     
-    base_den2 = bases[rnd.randint(0, len(bases)-1)]
-    coef_den2 = rnd.randint(-8, 8)
+    base_den2 = bases[rand.randint(0, len(bases)-1)]
+    coef_den2 = rand.randint(-8, 8)
     while coef_den2 == 0:
-        coef_den2 = rnd.randint(-8, 8)
-    exp_den2 = rnd.randint(-4, 4)
+        coef_den2 = rand.randint(-8, 8)
+    exp_den2 = rand.randint(-4, 4)
     
     denom1 = await fmt_term(coef_den1, base_den1, exp_den1)
     denom2 = await fmt_term(coef_den2, base_den2, exp_den2)
@@ -65,8 +64,8 @@ async def generate_limit():
     primer = f"\\lim_{{n \\to \\infty}} \\frac{{{numerator}}}{{{denominator}}}"
     return primer
 
-async def generate_lim_6_3(n):
+async def generate_lim_6_3(rand, n):
     primer = []
     for _ in range(n):
-        primer.append(await generate_limit())
+        primer.append(await generate_limit(rand))
     return primer

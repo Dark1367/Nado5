@@ -1,9 +1,7 @@
 from src.utils.Random import Random
 import os
 
-rand = Random(str(os.urandom(8)))
-
-async def generate_coefficient():
+async def generate_coefficient(rand):
     coeff = rand.randint(-10, 10)
     while coeff == 0:
         coeff = rand.randint(-10, 10)
@@ -15,8 +13,8 @@ async def generate_coefficient():
     else:
         return str(coeff)
 
-async def generate_base_exponential():
-    A = await generate_coefficient()
+async def generate_base_exponential(rand):
+    A = await generate_coefficient(rand)
     
     variant = rand.choice([1, 2, 3])
     
@@ -36,8 +34,8 @@ async def generate_base_exponential():
         else:
             return f"e^{{{A}x{k}}}"
 
-async def generate_exponent_fraction():
-    b = await generate_coefficient()
+async def generate_exponent_fraction(rand):
+    b = await generate_coefficient(rand)
     
     p_type = rand.choice([1, 2, 3, 4])
     
@@ -66,10 +64,10 @@ async def generate_exponent_fraction():
     else:  
         return f"\\frac{{{b}}}{{x}}"
 
-async def generate_infinity_limit():
-    base_str = await generate_base_exponential()
+async def generate_infinity_limit(rand):
+    base_str = await generate_base_exponential(rand)
     
-    exp_str = await generate_exponent_fraction()
+    exp_str = await generate_exponent_fraction(rand)
     
     limit_form = rand.choice([1, 2, 3])
     
@@ -82,11 +80,11 @@ async def generate_infinity_limit():
     
     return primer
 
-async def gen_two_two_lim(n):
+async def gen_two_two_lim(rand, n):
     primers = []
     
     for i in range(n):
-        primer = await generate_infinity_limit()
+        primer = await generate_infinity_limit(rand)
         primers.append(primer)
     
     return primers

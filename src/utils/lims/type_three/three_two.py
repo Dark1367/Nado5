@@ -1,9 +1,7 @@
 from src.utils.Random import Random
 import os
 
-rand = Random(str(os.urandom(8)))
-
-async def generate_exp_power_zero_limit():
+async def generate_exp_power_zero_limit(rand):
     A = rand.randint(-10, 10)
     while A == 0:
         A = rand.randint(-10, 10)
@@ -37,7 +35,7 @@ async def generate_exp_power_zero_limit():
     
     return limit_str
 
-async def generate_exp_power_zero_limit_variations():
+async def generate_exp_power_zero_limit_variations(rand):
     variation = rand.randint(1, 3)
     
     p = rand.randint(1, 5)
@@ -133,7 +131,7 @@ async def generate_exp_power_zero_limit_variations():
     
     return limit_str
 
-async def generate_exp_power_zero_limit_with_trig():
+async def generate_exp_power_zero_limit_with_trig(rand):
     trig_type = rand.randint(1, 2)
     p = rand.randint(1, 5)
     b = rand.randint(-10, 10)
@@ -212,16 +210,16 @@ async def generate_exp_power_zero_limit_with_trig():
     limit_str = f"\\lim_{{x \\to \\infty}}{{\\left({base_str}\\right)}}^{{{exponent_str}}}"
     return limit_str
 
-async def gen_three_two_lim(n, variations=True, trig=True):
+async def gen_three_two_lim(rand, n, variations=True, trig=True):
     primers = []
     
     for _ in range(n):
         if trig and rand.chance(30):  
-            primer = await generate_exp_power_zero_limit_with_trig()
+            primer = await generate_exp_power_zero_limit_with_trig(rand)
         elif variations and rand.chance(50): 
-            primer = await generate_exp_power_zero_limit_variations()
+            primer = await generate_exp_power_zero_limit_variations(rand)
         else: 
-            primer = await generate_exp_power_zero_limit()
+            primer = await generate_exp_power_zero_limit(rand)
         
         primers.append(primer)
     

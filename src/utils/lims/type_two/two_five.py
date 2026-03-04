@@ -1,9 +1,7 @@
 from src.utils.Random import Random
 import os
 
-rand = Random(str(os.urandom(8)))
-
-async def generate_coefficient():
+async def generate_coefficient(rand):
     coeff = rand.randint(-10, 10)
     while coeff == 0:
         coeff = rand.randint(-10, 10)
@@ -15,8 +13,8 @@ async def generate_coefficient():
     else:
         return str(coeff)
 
-async def generate_simple_base():
-    A = await generate_coefficient()
+async def generate_simple_base(rand):
+    A = await generate_coefficient(rand)
     
 
     m_type = rand.choice([1, 2, 3, 4])
@@ -43,9 +41,9 @@ async def generate_simple_base():
     else: 
         return str(A), 0
 
-async def generate_composite_exponent():
-    b = await generate_coefficient()
-    c = await generate_coefficient()
+async def generate_composite_exponent(rand):
+    b = await generate_coefficient(rand)
+    c = await generate_coefficient(rand)
     
     case_type = rand.choice([1, 2, 3, 4, 5])
     
@@ -108,10 +106,10 @@ async def generate_composite_exponent():
     
     return exponent_str
 
-async def generate_simple_power_limit():
-    base_expr, m = await generate_simple_base()
+async def generate_simple_power_limit(rand):
+    base_expr, m = await generate_simple_base(rand)
     
-    exponent_expr = await generate_composite_exponent()
+    exponent_expr = await generate_composite_exponent(rand)
     
     limit_type = rand.choice([1, 2, 3, 4])
     
@@ -127,11 +125,11 @@ async def generate_simple_power_limit():
     
     return primer
 
-async def gen_two_five_lim(n):
+async def gen_two_five_lim(rand, n):
     primers = []
     
     for i in range(n):
-        primer = await generate_simple_power_limit()
+        primer = await generate_simple_power_limit(rand)
         primers.append(primer)
     
     return primers

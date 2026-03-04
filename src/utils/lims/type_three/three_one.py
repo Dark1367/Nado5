@@ -1,9 +1,7 @@
 from src.utils.Random import Random
 import os
 
-rand = Random(str(os.urandom(8)))
-
-async def generate_inf_power_zero_limit():
+async def generate_inf_power_zero_limit(rand):
     A = rand.randint(-20, 20)
     while A == 0:  
         A = rand.randint(-20, 20)
@@ -37,9 +35,9 @@ async def generate_inf_power_zero_limit():
     
     return limit_str
 
-async def gen_three_one_lim(n):
+async def gen_three_one_lim(rand, n):
     primers = []
     for _ in range(n):
-        primer = await generate_inf_power_zero_limit()
+        primer = await generate_inf_power_zero_limit(rand)
         primers.append(primer)
     return primers

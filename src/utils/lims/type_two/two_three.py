@@ -1,9 +1,7 @@
 from src.utils.Random import Random
 import os
 
-rand = Random(str(os.urandom(8)))
-
-async def generate_coefficient():
+async def generate_coefficient(rand):
     coeff = rand.randint(-10, 10)
     while coeff == 0:
         coeff = rand.randint(-10, 10)
@@ -15,8 +13,8 @@ async def generate_coefficient():
     else:
         return str(coeff)
 
-async def generate_polynomial_term(degree, force_coeff=False):
-    coeff = await generate_coefficient()
+async def generate_polynomial_term(rand, degree, force_coeff=False):
+    coeff = await generate_coefficient(rand)
     
     if degree == 0:
         return coeff
@@ -33,7 +31,7 @@ async def generate_polynomial_term(degree, force_coeff=False):
         else:
             return f"{coeff}x^{{{int(degree)}}}"
 
-async def generate_polynomial(min_degree=0.5, max_terms=3):
+async def generate_polynomial(rand, min_degree=0.5, max_terms=3):
     m_type = rand.choice([1, 2, 3])
     
     if m_type == 1: 
@@ -43,7 +41,7 @@ async def generate_polynomial(min_degree=0.5, max_terms=3):
     else: 
         m = rand.choice([0, -1, -2])
     
-    A = await generate_coefficient()
+    A = await generate_coefficient(rand)
     if m == 0:
         main_term = A
     elif m == 1:
@@ -61,7 +59,7 @@ async def generate_polynomial(min_degree=0.5, max_terms=3):
     
     for _ in range(num_extra):
         extra_deg = m + rand.choice([1, 2, 3, 0.5, 1.5])
-        term = await generate_polynomial_term(extra_deg)
+        term = await generate_polynomial_term(rand, extra_deg)
         terms.append(term)
     
     polynomial = terms[0]
@@ -72,7 +70,7 @@ async def generate_polynomial(min_degree=0.5, max_terms=3):
     
     return polynomial, m, A
 
-async def generate_root():
+async def generate_root(rand):
     n_type = rand.choice([1, 2, 3])
     
     if n_type == 1: 
@@ -83,8 +81,8 @@ async def generate_root():
         n = rand.choice([4, 5, 6])
         return f"\\sqrt[{n}]{{", "}", n
 
-async def generate_exponent():
-    b = await generate_coefficient()
+async def generate_exponent(rand):
+    b = await generate_coefficient(rand)
     
     p_type = rand.choice([1, 2, 3, 4])
     
@@ -109,12 +107,12 @@ async def generate_exponent():
     else: 
         return str(b)
 
-async def generate_root_limit():
-    root_start, root_end, n = await generate_root()
+async def generate_root_limit(rand):
+    root_start, root_end, n = await generate_root(rand)
     
-    polynomial, m, A = await generate_polynomial()
+    polynomial, m, A = await generate_polynomial(rand)
     
-    exponent = await generate_exponent()
+    exponent = await generate_exponent(rand)
     
     base_str = f"{root_start}{polynomial}{root_end}"
     
@@ -129,11 +127,11 @@ async def generate_root_limit():
     
     return primer
 
-async def gen_two_three_lim(n):
+async def gen_two_three_lim(rand, n):
     primers = []
     
     for i in range(n):
-        primer = await generate_root_limit()
+        primer = await generate_root_limit(rand)
         primers.append(primer)
     
     return primers

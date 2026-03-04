@@ -1,6 +1,5 @@
 from src.utils.Random import Random
 import os
-rnd = Random(str(os.urandom(8)))
 
 async def fmt_q(q):
     if q == int(q):
@@ -25,14 +24,14 @@ async def fmt_q(q):
             return f"{sign}\\frac{{{numer}}}{{{denom}}}"
     return str(round(q, 2))
 
-async def simple():
-    a = rnd.randint(1, 10) / 2
+async def simple(rand):
+    a = rand.randint(1, 10) / 2
     while a == 1:
-        a = rnd.randint(1, 10) / 2
+        a = rand.randint(1, 10) / 2
     
-    b = rnd.randint(1, 10) / 2
+    b = rand.randint(1, 10) / 2
     while b == 1 or b == a:
-        b = rnd.randint(1, 10) / 2
+        b = rand.randint(1, 10) / 2
 
     sa = await fmt_q(a)
     sb = await fmt_q(b)
@@ -43,15 +42,15 @@ async def simple():
     res = f"\\lim_{{n \\to \\infty}} \\frac{{{top}}}{{{bot}}}"
     return res
 
-async def with_offset():
-    off1 = rnd.randint(0, 4)
-    off2 = rnd.randint(0, 4)
-    a = rnd.randint(1, 8) / 2 
+async def with_offset(rand):
+    off1 = rand.randint(0, 4)
+    off2 = rand.randint(0, 4)
+    a = rand.randint(1, 8) / 2
     while a == 1:
-        a = rnd.randint(1, 8) / 2
-    b = rnd.randint(1, 8) / 2
+        a = rand.randint(1, 8) / 2
+    b = rand.randint(1, 8) / 2
     while b == 1 or b == a:
-        b = rnd.randint(1, 8) / 2
+        b = rand.randint(1, 8) / 2
 
     sa = await fmt_q(a)
     sb = await fmt_q(b)
@@ -76,15 +75,15 @@ async def with_offset():
 
     return f"\\lim_{{n \\to \\infty}} \\frac{{{top}}}{{{bot}}}"
 
-async def with_coef():
-    k1 = rnd.randint(1, 10)
-    k2 = rnd.randint(1, 10)
-    a = rnd.randint(1, 8) / 2
+async def with_coef(rand):
+    k1 = rand.randint(1, 10)
+    k2 = rand.randint(1, 10)
+    a = rand.randint(1, 8) / 2
     while a == 1:
-        a = rnd.randint(1, 8) / 2
-    b = rnd.randint(1, 8) / 2
+        a = rand.randint(1, 8) / 2
+    b = rand.randint(1, 8) / 2
     while b == 1 or b == a:
-        b = rnd.randint(1, 8) / 2
+        b = rand.randint(1, 8) / 2
 
     sa = await fmt_q(a)
     sb = await fmt_q(b)
@@ -94,29 +93,29 @@ async def with_coef():
 
     return f"\\lim_{{n \\to \\infty}} \\frac{{{top}}}{{{bot}}}"
 
-async def alternating():
-    a = rnd.randint(1, 5) / 2
+async def alternating(rand):
+    a = rand.randint(1, 5) / 2
     while a == 1:
-        a = rnd.randint(1, 5) / 2
+        a = rand.randint(1, 5) / 2
     s = await fmt_q(a)
     top = f"1 + {s} + {s}^2 + \\cdots + {s}^n"
     bot = f"1 + {s} + {s}^2 + {s}^3 + \\cdots + {s}^n"
     return f"\\lim_{{n \\to \\infty}} \\frac{{{top}}}{{{bot}}}"
 
-async def generate_limit():
-    v = rnd.randint(1, 4)
+async def generate_limit(rand):
+    v = rand.randint(1, 4)
 
     if v == 1:
-        return await simple()
+        return await simple(rand)
     elif v == 2:
-        return await with_offset()
+        return await with_offset(rand)
     elif v == 3:
-        return await with_coef()
+        return await with_coef(rand)
     elif v == 4:
-        return await alternating()
+        return await alternating(rand)
 
-async def generate_lim_7_1(n):
+async def generate_lim_7_1(rand, n):
     primer = []
     for _ in range(n):
-        primer.append(await generate_limit())
+        primer.append(await generate_limit(rand))
     return primer

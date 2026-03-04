@@ -1,9 +1,7 @@
 from src.utils.Random import Random
 import os
 
-rand = Random(str(os.urandom(8)))
-
-async def generate_trig_power_limit():
+async def generate_trig_power_limit(rand):
     A = rand.randint(-20, 20)
     while A == 0:  
         A = rand.randint(-20, 20)
@@ -98,7 +96,7 @@ async def generate_trig_power_limit():
     
     return limit_str
 
-async def generate_trig_power_limit_variations():
+async def generate_trig_power_limit_variations(rand):
     variation = rand.randint(1, 3)
     
  
@@ -235,7 +233,7 @@ async def generate_trig_power_limit_variations():
     
     return limit_str
 
-async def generate_trig_power_limit_with_exponential():
+async def generate_trig_power_limit_with_exponential(rand):
     base_type = rand.randint(1, 2)
 
     p = rand.randint(1, 5)
@@ -329,20 +327,20 @@ async def generate_trig_power_limit_with_exponential():
     
     return limit_str
 
-async def gen_three_five_lim(n, variations=True):
+async def gen_three_five_lim(rand, n, variations=True):
     primers = []
     
     for _ in range(n):
         if variations:
             choice = rand.randint(1, 3)
             if choice == 1:
-                primer = await generate_trig_power_limit()
+                primer = await generate_trig_power_limit(rand)
             elif choice == 2:
-                primer = await generate_trig_power_limit_variations()
+                primer = await generate_trig_power_limit_variations(rand)
             else:
-                primer = await generate_trig_power_limit_with_exponential()
+                primer = await generate_trig_power_limit_with_exponential(rand)
         else:
-            primer = await generate_trig_power_limit()
+            primer = await generate_trig_power_limit(rand)
         
         primers.append(primer)
     

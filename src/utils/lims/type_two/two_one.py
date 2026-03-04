@@ -1,9 +1,7 @@
 from src.utils.Random import Random
 import os
 
-rand = Random(str(os.urandom(8)))
-
-async def generate_base_part():
+async def generate_base_part(rand):
     base_type = rand.randint(1, 4)  
     
     if base_type == 1:  
@@ -43,7 +41,7 @@ async def generate_base_part():
         func = rand.choice(funcs)
         return f"{func}(x)"
 
-async def generate_exponent_part():
+async def generate_exponent_part(rand):
     b = rand.randint(-10, 10)
     while b == 0:
         b = rand.randint(-10, 10)
@@ -73,20 +71,20 @@ async def generate_exponent_part():
     
     return exp_str
 
-async def generate_zero_plus_limit():
-    base_str = await generate_base_part()
+async def generate_zero_plus_limit(rand):
+    base_str = await generate_base_part(rand)
     
-    exp_str = await generate_exponent_part()
+    exp_str = await generate_exponent_part(rand)
     
     primer = f"\\lim_{{x \\to 0^+}} \\left({base_str}\\right)^{{{exp_str}}}"
     
     return primer
 
-async def gen_two_one_lim(n):
+async def gen_two_one_lim(rand, n):
     primers = []
     
     for i in range(n):
-        primer = await generate_zero_plus_limit()
+        primer = await generate_zero_plus_limit(rand)
         primers.append(primer)
     
     return primers

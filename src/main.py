@@ -7,16 +7,18 @@ from fastapi import FastAPI, Form, Request, Response
 from fastapi.responses import HTMLResponse, PlainTextResponse, RedirectResponse, FileResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
+from sqlmodel import select, Session
 
 from src.api.templates import router as template_router
 from src.api.users import router as user_router
 from src.api import SessionDep
-from src.database import PrivateUser
+from src.database import PrivateUser, Generation, TableGeneration, get_session
 from src.utils import users as uu
 from src.utils import templates as ut
 from src.utils.create_file import create_pdf
 from src.models import GenerateRequest
 from src.utils.generate_lim import generate_lims
+from src.utils.generations import create_genertion
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
@@ -160,7 +162,7 @@ def generate(request: Request, session: SessionDep):
 
 
 @app.get("/primer_list", response_class=HTMLResponse)
-def primer_list(request: Request, session: SessionDep):
+async def primer_list(request: Request, session: SessionDep):
     current_user = get_current_user_from_request(request, session)
 
     if not current_user:
@@ -168,7 +170,16 @@ def primer_list(request: Request, session: SessionDep):
 
     encoded = request.query_params.get("problems", "")
     decoded = base64.urlsafe_b64decode(encoded).decode()
-    problems = json.loads(decoded)
+    id = int(json.loads(decoded))
+
+    statement = select(TableGeneration).where(TableGeneration.id == id)
+    ses = next(get_session())
+    results = ses.exec(statement)
+    table_gen = results.first()
+
+    problems = await generate_lims(table_gen.counters, str(table_gen.seed))
+
+    ses.close()
 
     return templates.TemplateResponse("primer_list.html", {"request": request, "user": current_user, "problems": problems})
 
@@ -180,10 +191,12 @@ async def generate(request: Request, session: SessionDep, data: GenerateRequest)
     if not current_user:
         return RedirectResponse(url="/login", status_code=302)
 
-    problems = await generate_lims(data.values)
-    create_pdf(problems)
+    gen = Generation()
+    gen.templates = [0, 1, 2, 3, 4, 5, 6]
+    gen.counters = data.values
+    table_gen =  create_genertion(current_user.id, gen, session)
 
-    json_data = json.dumps(problems)
+    json_data = json.dumps(str(table_gen.id))
     encoded = base64.urlsafe_b64encode(json_data.encode()).decode()
 
     url = f"/primer_list?problems={encoded}"

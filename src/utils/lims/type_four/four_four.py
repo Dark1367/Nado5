@@ -1,8 +1,7 @@
 from src.utils.Random import Random
 import os
-rand = Random(str(os.urandom(8)))
 
-async def monomial(max_deg, min_deg=0, min_factor=1, max_factor=20):
+async def monomial(rand, max_deg, min_deg=0, min_factor=1, max_factor=20):
     degree = rand.randint(min_deg, max_deg)
     factor = rand.randint(min_factor, max_factor)
     if max_deg == min_deg == 0.5:
@@ -21,16 +20,16 @@ async def monomial(max_deg, min_deg=0, min_factor=1, max_factor=20):
             string += f"^{{{str(degree)}}}"
     return string, degree, factor
 
-async def polynomial(max_deg, count):
+async def polynomial(rand, max_deg, count):
     string = ""
     max_degree = 0
     max_deg_factor = 0
     for i in range(count):
         if i == 0:
-            s, max_degree, max_deg_factor = await monomial(max_deg, max_deg, max_factor=5)
+            s, max_degree, max_deg_factor = await monomial(rand, max_deg, max_deg, max_factor=5)
             string = s
         else:
-            s, max_deg, _ = await monomial(max_deg, count-i-1)
+            s, max_deg, _ = await monomial(rand, max_deg, count-i-1)
             op = rand.random_choice(["+", "-"])
             string += op+s
         max_deg -= 1
@@ -44,7 +43,7 @@ async def get_factors(n):
             factors.add(n // i)
     return sorted(list(factors))
 
-async def polynomials_part(deg, count):
+async def polynomials_part(rand, deg, count):
     if rand.chance(50):
         deg_factors = await get_factors(deg)
         part_degree = 1
@@ -52,49 +51,49 @@ async def polynomials_part(deg, count):
             part_degree = rand.random_choice(list(deg_factors))
             deg = int(deg / part_degree)
 
-        string, max_degree, max_deg_factor = await polynomial(deg, min(count, deg + 1))
+        string, max_degree, max_deg_factor = await polynomial(rand, deg, min(count, deg + 1))
         string = f"({string})"
         if part_degree != 1:
             string += f"^{{{part_degree}}}"
         return string, max_degree * part_degree, max_deg_factor ** part_degree
     else:
         part_degree = deg * 2
-        root_string, _, root_factor = await monomial(0.5, 0.5, max_factor=2)
-        normal_string, _, _ = await monomial(0, 0)
+        root_string, _, root_factor = await monomial(rand, 0.5, 0.5, max_factor=2)
+        normal_string, _, _ = await monomial(rand, 0, 0)
         return f"({root_string}{rand.random_choice(["+", "-"])}{normal_string})^{{{part_degree}}}", part_degree // 2, root_factor ** part_degree
 
-async def polynomials(max_deg, count):
+async def polynomials(rand, max_deg, count):
     string = ""
     general_degree = 0
     general_factor = 1
     for i in range(count):
         if i == 0:
             degree = rand.randint(1, max_deg-count+1)
-            string, general_degree, general_factor = await polynomials_part(degree, rand.randint(2, 3))
+            string, general_degree, general_factor = await polynomials_part(rand, degree, rand.randint(2, 3))
             max_deg -= degree
         elif i == count-1:
             degree = max_deg
-            s, d, f = await polynomials_part(degree, rand.randint(2, 3))
+            s, d, f = await polynomials_part(rand, degree, rand.randint(2, 3))
             string += s
             general_degree += d
             general_factor *= f
         else:
             degree = rand.randint(1, max_deg-count+i+1)
-            s, d, f = await polynomials_part(degree, rand.randint(2, 3))
+            s, d, f = await polynomials_part(rand, degree, rand.randint(2, 3))
             max_deg -= degree
             string += s
             general_degree += d
             general_factor *= f
     return string, general_degree, general_factor
 
-async def generate_lim():
+async def generate_lim(rand):
     if rand.chance(70):
         denominator_degree = divisor_degree = rand.randint(3, 7)
     else:
         denominator_degree = rand.randint(3, 7)
         divisor_degree = rand.randint(3, 7)
-    devisor, devisor_max_degree, devisor_max_factor = await polynomials(divisor_degree, rand.randint(2, 3))
-    denominator, denominator_max_degree, denominator_max_factor = await polynomials(denominator_degree, rand.randint(2, 3))
+    devisor, devisor_max_degree, devisor_max_factor = await polynomials(rand, divisor_degree, rand.randint(2, 3))
+    denominator, denominator_max_degree, denominator_max_factor = await polynomials(rand, denominator_degree, rand.randint(2, 3))
     problem = f"\\lim_{{x \\to \\infty}}\\frac{{{devisor}}}{{{denominator}}}"
     if devisor_max_degree > denominator_max_degree:
         sign = "+"
@@ -110,9 +109,9 @@ async def generate_lim():
             solution = f"{devisor_max_factor // denominator_max_factor}"
     return problem, solution
 
-async def generate_lim_4_4(n):
+async def generate_lim_4_4(rand, n):
     primers = []
     for _ in range(n):
-        primer, solution = await generate_lim()
+        primer, solution = await generate_lim(rand)
         primers.append(primer)
     return primers

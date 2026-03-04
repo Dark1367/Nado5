@@ -1,9 +1,7 @@
 from src.utils.Random import Random
 import os
 
-rand = Random(str(os.urandom(8)))
-
-async def chlen(n=None, force_nonzero=False):
+async def chlen(rand, n=None, force_nonzero=False):
     if n is None:
         type = rand.randint(1, 3)
     elif n == 0:
@@ -54,7 +52,7 @@ async def chlen(n=None, force_nonzero=False):
 
     return s, deg, str(mult)
 
-async def mnogochlen(max_n=None, guaranteed_degree=None):
+async def mnogochlen(rand, max_n=None, guaranteed_degree=None):
     if max_n is None:
         max_n = rand.randint(3, 6)
     
@@ -63,16 +61,16 @@ async def mnogochlen(max_n=None, guaranteed_degree=None):
     nums = {}
 
     if guaranteed_degree is not None:
-        s, deg, mult = await chlen(guaranteed_degree, force_nonzero=True)
+        s, deg, mult = await chlen(rand, guaranteed_degree, force_nonzero=True)
     else:
-        s, deg, mult = await chlen(max_n, force_nonzero=True)
+        s, deg, mult = await chlen(rand, max_n, force_nonzero=True)
     
     deg = str(deg)
     parts.append(s)
     nums[deg] = mult
 
     for i in range(n):
-        s, deg, mult = await chlen(None, force_nonzero=False)
+        s, deg, mult = await chlen(rand, None, force_nonzero=False)
         deg = str(deg)
         parts.append(s)
         if deg in nums:
@@ -93,10 +91,10 @@ async def mnogochlen(max_n=None, guaranteed_degree=None):
     
     return mnogoch
 
-async def generate_polynomial_power_sum_limit():
+async def generate_polynomial_power_sum_limit(rand):
 
     poly_degree = rand.randint(2, 5)
-    P_x = await mnogochlen(guaranteed_degree=poly_degree)
+    P_x = await mnogochlen(rand, guaranteed_degree=poly_degree)
     
  
     if rand.chance(70):
@@ -187,13 +185,13 @@ async def generate_polynomial_power_sum_limit():
     
     return limit_str
 
-async def generate_polynomial_power_sum_limit_variations():
+async def generate_polynomial_power_sum_limit_variations(rand):
 
     variation = rand.randint(1, 3)
     
 
     poly_degree = rand.randint(2, 4)
-    P_x = await mnogochlen(guaranteed_degree=poly_degree)
+    P_x = await mnogochlen(rand, guaranteed_degree=poly_degree)
     
 
     p = rand.randint(1, 4)
@@ -275,7 +273,7 @@ async def generate_polynomial_power_sum_limit_variations():
     limit_str = f"\\lim_{{x \\rightarrow \\infty}}{{\\left({P_x}\\right)}}^{{{exponent_str}}}"
     return limit_str
 
-async def generate_polynomial_power_sum_limit_with_diff_polys():
+async def generate_polynomial_power_sum_limit_with_diff_polys(rand):
     poly_type = rand.randint(1, 3)
     
   
@@ -295,12 +293,12 @@ async def generate_polynomial_power_sum_limit_with_diff_polys():
     if poly_type == 1:
      
         poly_degree = rand.randint(2, 4)
-        P_x = await mnogochlen(guaranteed_degree=poly_degree)
+        P_x = await mnogochlen(rand, guaranteed_degree=poly_degree)
     
     elif poly_type == 2:
      
         base_degree = rand.randint(2, 3)
-        P_x = await mnogochlen(guaranteed_degree=base_degree)
+        P_x = await mnogochlen(rand, guaranteed_degree=base_degree)
         
      
         high_degree = base_degree + rand.randint(3, 6)
@@ -314,7 +312,7 @@ async def generate_polynomial_power_sum_limit_with_diff_polys():
     
     else: 
         poly_degree = rand.randint(2, 3)
-        P_x = await mnogochlen(guaranteed_degree=poly_degree)
+        P_x = await mnogochlen(rand, guaranteed_degree=poly_degree)
         
      
         root_deg = rand.randint(1, 3) / 2
@@ -354,20 +352,20 @@ async def generate_polynomial_power_sum_limit_with_diff_polys():
     limit_str = f"\\lim_{{x \\rightarrow \\infty}}{{\\left({P_x}\\right)}}^{{{exponent_str}}}"
     return limit_str
 
-async def gen_three_four_lim(n, variations=True):
+async def gen_three_four_lim(rand, n, variations=True):
     primers = []
     
     for _ in range(n):
         if variations:
             choice = rand.randint(1, 3)
             if choice == 1:
-                primer = await generate_polynomial_power_sum_limit()
+                primer = await generate_polynomial_power_sum_limit(rand)
             elif choice == 2:
-                primer = await generate_polynomial_power_sum_limit_variations()
+                primer = await generate_polynomial_power_sum_limit_variations(rand)
             else:
-                primer = await generate_polynomial_power_sum_limit_with_diff_polys()
+                primer = await generate_polynomial_power_sum_limit_with_diff_polys(rand)
         else:
-            primer = await generate_polynomial_power_sum_limit()
+            primer = await generate_polynomial_power_sum_limit(rand)
         
         primers.append(primer)
     
