@@ -119,6 +119,82 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            const showButtons = document.querySelectorAll('.card-btn:not(.delete-btn):not(.generate-btn)')
+            showButtons.forEach((showButton, index) => {
+                showButton.addEventListener('click', async function () {
+                    const data = {
+                        btn: "show",
+                        index: index
+                    };
+                    const response = await fetch('/account', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data),
+                        redirect: 'follow' // автоматически следовать за редиректом
+                    });
+                    if (response.redirected) {
+                        window.location.href = response.url; // принудительно переходим
+                    } else {
+                        const result = await response.json();
+                        console.log(result);
+                    }
+                });
+            });
+
+            const genButtons = document.querySelectorAll('.generate-btn')
+            genButtons.forEach((genButton, index) => {
+                genButton.addEventListener('click', async function () {
+                    const data = {
+                        btn: "gen",
+                        index: index
+                    };
+                    const response = await fetch('/account', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data),
+                        redirect: 'follow' // автоматически следовать за редиректом
+                    });
+                    if (response.redirected) {
+                        window.location.href = response.url; // принудительно переходим
+                    } else {
+                        const result = await response.json();
+                        console.log(result);
+                    }
+                });
+            });
+
+            const dellButtons = document.querySelectorAll('.delete-btn')
+            dellButtons.forEach((dellButton, index) => {
+                dellButton.addEventListener('click', async function () {
+                    const data = {
+                        btn: "dell",
+                        index: index
+                    };
+                    const response = await fetch('/account', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data),
+                        redirect: 'follow' // автоматически следовать за редиректом
+                    });
+                    if (response.redirected) {
+                        window.location.href = response.url; // принудительно переходим
+                    } else {
+                        const result = await response.json();
+                        console.log(result);
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
             const toggleOptions = document.querySelectorAll('.toggle-option');
             const generationCards = document.querySelectorAll('.generation-card');
             const templateCards = document.querySelectorAll('.template-card');
