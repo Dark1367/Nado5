@@ -1,76 +1,149 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="ru">
 
-{% block content %}
-<div class="card">
-  <div class="card-header">
-    <h2>Your Account</h2>
-  </div>
-  <div class="card-body">
-    <h5>Email: {{ user.email }}</h5>
-    <form action="/logout">
-      <button type="submit" class="btn btn-secondary mb-3">Logout</button>
-    </form>
-    <hr>
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h3>Your Templates</h3>
-    </div>
-    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTemplateModal">
-      Add Template
-    </button>
-    <ul class="list-group">
-      {% for template in templates %}
-      <li class="list-group-item">
-        <div class="d-flex justify-content-between">
-          <div>
-            <strong>{{ template.title }}</strong><br>
-          </div>
-          {% if template.user_id %}
-          <button type="button" class="btn btn-danger" title="Delete template"
-            onclick="if(confirm('Delete this template?')){fetch('api/templates/{{ template.id }}', {method:'DELETE'}).then(res=>{ if(res.ok) { location.reload(); } else { res.text().then(t=>alert('Delete failed: '+t)); }}).catch(()=>alert('Delete failed')); }">
-            &times;
-          </button>
-          {% endif %}
-        </div>
-        <div class="maths">
-          $${{ template.repr }}$$
-        </div>
-      </li>
-      {% endfor %}
-    </ul>
-  </div>
-</div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/styles.css">
+    <title>LimGen | Профиль</title>
+</head>
 
-<!-- Add Template Modal -->
-<div class="modal fade" id="addTemplateModal" tabindex="-1" aria-labelledby="addTemplateModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="addTemplateModalLabel">Add New Template</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <form method="POST">
-        <div class="modal-body">
-          <div class="mb-3">
-            <label for="templateTitle" class="form-label">Template Title</label>
-            <input type="text" class="form-control" id="templateTitle" name="title" required>
-          </div>
-          <div class="mb-3">
-            <label for="templateRepr" class="form-label">LaTeX Expression</label>
-            <textarea class="form-control" id="templateRepr" name="repr" rows="3" required></textarea>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-primary">Add Template</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
+<body>
 
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js"
-  integrity="sha384-J+9dG2KMoiR9hqcFao0IBLwxt6zpcyN68IgwzsCSkbreXUjmNVRhPFTssqdSGjwQ" crossorigin="anonymous"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js"
-  integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
-  onload="renderMathInElement(document.body);"></script>
-{% endblock %}
+    <header class="header">
+        <button class="logo" onclick="window.location.href='../static/index.html'" aria-label="На главную">
+            <img src="../static/logo.png" alt="Логотип">
+        </button>
+        <div class="nav-menu">
+            <a href="../static/index.html">Профиль</a>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="profile-content">
+            <div class="greeting-card">
+                <span class="greeting-emoji">👨‍🎓</span>
+                <span class="greeting-text">Добрый день, {{ user.email }}!</span>
+            </div>
+
+            <div class="toggle-switch">
+                <span class="toggle-option active" data-mode="generation">Генерации</span>
+                <span class="toggle-option" data-mode="templates">Шаблоны</span>
+            </div>
+
+            <div class="cards-grid" id="cards-container">
+                <div class="card generation-card">
+                    <div class="card-title">Генерация 1</div>
+                    <div class="card-actions">
+                        <button class="card-btn">Посмотреть</button>
+                        <button class="card-btn delete-btn">Удалить</button>
+                    </div>
+                </div>
+                <div class="card generation-card">
+                    <div class="card-title">Генерация 2</div>
+                    <div class="card-actions">
+                        <button class="card-btn">Посмотреть</button>
+                        <button class="card-btn delete-btn">Удалить</button>
+                    </div>
+                </div>
+                <div class="card generation-card">
+                    <div class="card-title">Генерация 3</div>
+                    <div class="card-actions">
+                        <button class="card-btn">Посмотреть</button>
+                        <button class="card-btn delete-btn">Удалить</button>
+                    </div>
+                </div>
+                <div class="card generation-card">
+                    <div class="card-title">Генерация 4</div>
+                    <div class="card-actions">
+                        <button class="card-btn">Посмотреть</button>
+                        <button class="card-btn delete-btn">Удалить</button>
+                    </div>
+                </div>
+                <div class="card generation-card">
+                    <div class="card-title">Генерация 5</div>
+                    <div class="card-actions">
+                        <button class="card-btn">Посмотреть</button>
+                        <button class="card-btn delete-btn">Удалить</button>
+                    </div>
+                </div>
+
+                <div class="card template-card hidden">
+                    <div class="card-title">Шаблон 1</div>
+                    <div class="card-actions">
+                        <button class="card-btn delete-btn">Удалить</button>
+                        <button class="card-btn generate-btn">Генерировать</button>
+                    </div>
+                </div>
+                <div class="card template-card hidden">
+                    <div class="card-title">Шаблон 2</div>
+                    <div class="card-actions">
+                        <button class="card-btn delete-btn">Удалить</button>
+                        <button class="card-btn generate-btn">Генерировать</button>
+                    </div>
+                </div>
+                <div class="card template-card hidden">
+                    <div class="card-title">Шаблон 3</div>
+                    <div class="card-actions">
+                        <button class="card-btn delete-btn">Удалить</button>
+                        <button class="card-btn generate-btn">Генерировать</button>
+                    </div>
+                </div>
+                <div class="card template-card hidden">
+                    <div class="card-title">Шаблон 4</div>
+                    <div class="card-actions">
+                        <button class="card-btn delete-btn">Удалить</button>
+                        <button class="card-btn generate-btn">Генерировать</button>
+                    </div>
+                </div>
+                <div class="card template-card hidden">
+                    <div class="card-title">Шаблон 5</div>
+                    <div class="card-actions">
+                        <button class="card-btn delete-btn">Удалить</button>
+                        <button class="card-btn generate-btn">Генерировать</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="add-template-container hidden" id="add-template-btn">
+                <button class="add-template-btn">+ Добавить шаблон</button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>© 2025 LimGen. Все права защищены.</p>
+        <p>Разработано студентами <strong>РТУ МИРЭА</strong> | <a href="#">GitHub проекта</a></p>
+        <p><a href="https://t.me/AboutMathematics">О математике. ВУЗ😉</a> | Telegram канал</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const toggleOptions = document.querySelectorAll('.toggle-option');
+            const generationCards = document.querySelectorAll('.generation-card');
+            const templateCards = document.querySelectorAll('.template-card');
+            const addTemplateBtn = document.getElementById('add-template-btn');
+
+            toggleOptions.forEach(option => {
+                option.addEventListener('click', function () {
+                    toggleOptions.forEach(opt => opt.classList.remove('active'));
+                    this.classList.add('active');
+
+                    const mode = this.getAttribute('data-mode');
+
+                    if (mode === 'generation') {
+                        generationCards.forEach(card => card.classList.remove('hidden'));
+                        templateCards.forEach(card => card.classList.add('hidden'));
+                        addTemplateBtn.classList.add('hidden');
+                    } else {
+                        generationCards.forEach(card => card.classList.add('hidden'));
+                        templateCards.forEach(card => card.classList.remove('hidden'));
+                        addTemplateBtn.classList.remove('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
