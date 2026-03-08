@@ -377,6 +377,21 @@ body {
     width: 100%;
 }
 
+.example-text {
+    flex: 1;
+    margin-left: 1rem;
+    font-size: 1.1rem;
+    color: #333;
+    padding: 0.5rem;
+}
+
+.example-number {
+    font-weight: bold;
+    color: #095594;
+    min-width: 30px;
+    font-size: 1.2rem;
+}
+
 .example-item {
     display: flex;
     justify-content: space-between;

@@ -4,7 +4,7 @@ import base64
 import json
 import jwt
 from fastapi import FastAPI, Form, Request, Response
-from fastapi.responses import HTMLResponse, PlainTextResponse, RedirectResponse, FileResponse
+from fastapi.responses import HTMLResponse, PlainTextResponse, RedirectResponse, FileResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from sqlmodel import select, Session
@@ -36,7 +36,7 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
     else:
-        expire = datetime.now(timezone.utc) + timedelta(minutes=155)
+        expire = datetime.now(timezone.utc) + timedelta(minutes=15)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
@@ -190,6 +190,11 @@ async def generate(request: Request, session: SessionDep, data: GenerateRequest)
 
     if not current_user:
         return RedirectResponse(url="/login", status_code=302)
+
+    user_generations_count = session.query(TableGeneration).filter(TableGeneration.user_id == current_user.id).count()
+    
+    if user_generations_count >= 5:
+        return JSONResponse(status_code=400,content={"error": "Лимит генераций", "message": "Удалите 1 генерацию", "current_count": user_generations_count, "limit": 5})
 
     gen = Generation()
     gen.templates = [0, 1, 2, 3, 4, 5, 6]
