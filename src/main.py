@@ -16,9 +16,9 @@ from src.database import PrivateUser, Generation, TableGeneration, get_session
 from src.utils import users as uu
 from src.utils import templates as ut
 from src.utils.create_file import create_pdf
-from src.models import GenerateRequest
+from src.models import GenerateRequest, AccountRequest
 from src.utils.generate_lim import generate_lims
-from src.utils.generations import create_genertion
+from src.utils.generations import create_genertion, list_generations
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
@@ -133,11 +133,21 @@ def account(request: Request, session: SessionDep):
 
 
 @app.post("/account")
-def account(request: Request, session: SessionDep, title: str = Form(...), repr: str = Form(...)):
+def account(request: Request, session: SessionDep, data: AccountRequest):
     current_user = get_current_user_from_request(request, session)
 
-    ut.create_template(ut.Template(title=title, repr=repr), session, user_id=current_user.id)
-    return RedirectResponse(url="/account", status_code=302)
+    if data.btn == "show":
+        generations = list_generations(current_user.id, session)
+        json_data = json.dumps(str(generations[data.index].id))
+        encoded = base64.urlsafe_b64encode(json_data.encode()).decode()
+        url = f"/primer_list?problems={encoded}"
+        return RedirectResponse(url=url, status_code=302)
+
+    if data.btn == "del":
+        pass
+
+    if data.btn == "gen":
+        pass
 
 
 @app.get("/main", response_class=HTMLResponse)
