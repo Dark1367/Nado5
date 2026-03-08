@@ -143,8 +143,12 @@ def account(request: Request, session: SessionDep, data: AccountRequest):
         url = f"/primer_list?problems={encoded}"
         return RedirectResponse(url=url, status_code=302)
 
-    if data.btn == "del":
-        pass
+    if data.btn == "dell":
+        generations = list_generations(current_user.id, session)
+        generation_to_delete = generations[data.index]
+        session.delete(generation_to_delete)
+        session.commit()
+        return RedirectResponse(url="/account", status_code=302)
 
     if data.btn == "gen":
         pass
