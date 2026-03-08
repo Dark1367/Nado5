@@ -40,6 +40,7 @@ class TableGeneration(Generation, table=True):
     seed: Base64Bytes
     user_id: int = Field(foreign_key="tableuser.id")
     user: "TableUser" = Relationship(back_populates="generations")
+    creating_time: int
 
 
 path = Path(__file__).parent / "database.sqlite"

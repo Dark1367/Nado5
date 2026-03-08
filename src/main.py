@@ -220,3 +220,15 @@ async def generate(request: Request, session: SessionDep, data: GenerateRequest)
 
     url = f"/primer_list?problems={encoded}"
     return RedirectResponse(url=url, status_code=302)
+
+@app.get("/generations_dates")
+async def generations_dates(request: Request, session: SessionDep):
+    current_user = get_current_user_from_request(request, session)
+
+    generations = list_generations(current_user.id, session)
+
+    tab = ["", "", "", "", ""]
+    for i in range(min(len(tab), len(generations))):
+        date = datetime.fromtimestamp(generations[i].creating_time)
+        tab[i] = f"Генерация от {date.day}.{date.month}"
+    return tab

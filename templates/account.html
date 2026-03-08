@@ -222,4 +222,22 @@
     </script>
 </body>
 
+<script>
+    async function updateGenerations() {
+        const response = await fetch('/generations_dates');
+        const dates = await response.json();
+        const generations_cards = document.querySelectorAll('.generation-card');
+        for (let i = 0; i < 5; i++) {
+            generations_cards[i].querySelectorAll('.card-title')[0].textContent = dates[i]
+            if (dates[i] === "") {
+                generations_cards[i].querySelectorAll('.card-btn').forEach(but => {
+                    but.remove();
+                });
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', updateGenerations);
+</script>
+
 </html>
