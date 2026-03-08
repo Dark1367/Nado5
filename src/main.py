@@ -15,10 +15,10 @@ from src.api import SessionDep
 from src.database import PrivateUser, Generation, TableGeneration, get_session
 from src.utils import users as uu
 from src.utils import templates as ut
-from src.utils.create_file import create_pdf
 from src.models import GenerateRequest, AccountRequest
 from src.utils.generate_lim import generate_lims
 from src.utils.generations import create_genertion, list_generations
+from src.utils.templates import get_user_templates
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
@@ -221,14 +221,25 @@ async def generate(request: Request, session: SessionDep, data: GenerateRequest)
     url = f"/primer_list?problems={encoded}"
     return RedirectResponse(url=url, status_code=302)
 
-@app.get("/generations_dates")
-async def generations_dates(request: Request, session: SessionDep):
+@app.get("/get_user_info")
+async def get_user_info(request: Request, session: SessionDep):
     current_user = get_current_user_from_request(request, session)
 
     generations = list_generations(current_user.id, session)
 
-    tab = ["", "", "", "", ""]
-    for i in range(min(len(tab), len(generations))):
+    gen_tab = ["", "", "", "", ""]
+    for i in range(min(len(gen_tab), len(generations))):
         date = datetime.fromtimestamp(generations[i].creating_time)
-        tab[i] = f"Генерация от {date.day}.{date.month}"
-    return tab
+        gen_tab[i] = f"Генерация от {date.day}.{date.month}"
+
+    templates = get_user_templates(current_user.id, session)
+
+    temp_tab = ["", "", "", "", ""]
+    for i in range(min(len(temp_tab), len(templates))):
+        temp_tab[i] = templates[i].title
+
+    data = {
+        "gen": gen_tab,
+        "temp": temp_tab
+    }
+    return data

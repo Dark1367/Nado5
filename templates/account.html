@@ -224,13 +224,26 @@
 
 <script>
     async function updateGenerations() {
-        const response = await fetch('/generations_dates');
-        const dates = await response.json();
+        const response = await fetch('/get_user_info');
+        const data = await response.json();
+
+        const dates = data["gen"];
         const generations_cards = document.querySelectorAll('.generation-card');
         for (let i = 0; i < 5; i++) {
             generations_cards[i].querySelectorAll('.card-title')[0].textContent = dates[i]
             if (dates[i] === "") {
                 generations_cards[i].querySelectorAll('.card-btn').forEach(but => {
+                    but.remove();
+                });
+            }
+        }
+
+        const titles = data["temp"];
+        const templates_cards = document.querySelectorAll('.template-card');
+        for (let i = 0; i < 5; i++) {
+            templates_cards[i].querySelectorAll('.card-title')[0].textContent = titles[i]
+            if (titles[i] === "") {
+                templates_cards[i].querySelectorAll('.card-btn').forEach(but => {
                     but.remove();
                 });
             }
