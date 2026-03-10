@@ -8,3 +8,6 @@ class GenerateRequest(BaseModel):
 class AccountRequest(BaseModel):
     btn: str
     index: int
+
+class GeneratePDFRequest(BaseModel):
+    problems: List[str]

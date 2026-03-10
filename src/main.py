@@ -15,10 +15,11 @@ from src.api import SessionDep
 from src.database import PrivateUser, Generation, TableGeneration, get_session
 from src.utils import users as uu
 from src.utils import templates as ut
-from src.models import GenerateRequest, AccountRequest
+from src.models import GenerateRequest, AccountRequest, GeneratePDFRequest
 from src.utils.generate_lim import generate_lims
 from src.utils.generations import create_genertion, list_generations
 from src.utils.templates import get_user_templates
+from src.utils.create_file import create_pdf
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
@@ -243,3 +244,12 @@ async def get_user_info(request: Request, session: SessionDep):
         "temp": temp_tab
     }
     return data
+
+@app.post("/generate_pdf")
+async def generate_pdf(request: Request, session: SessionDep, data: GeneratePDFRequest):
+    file_path = "primer_list.pdf"
+    create_pdf(data.problems)
+    return FileResponse(
+        file_path,
+        filename="file.pdf"
+    )
