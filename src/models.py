@@ -11,3 +11,7 @@ class AccountRequest(BaseModel):
 
 class GeneratePDFRequest(BaseModel):
     problems: List[str]
+
+class TemplateCreate(BaseModel):
+    title: str
+    repr: str

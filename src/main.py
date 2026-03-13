@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, timezone
 import base64
 import json
 import jwt
-from fastapi import FastAPI, Form, Request, Response
+from fastapi import HTTPException, FastAPI, Form, Request
 from fastapi.responses import HTMLResponse, PlainTextResponse, RedirectResponse, FileResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
@@ -12,10 +12,10 @@ from sqlmodel import select, Session
 from src.api.templates import router as template_router
 from src.api.users import router as user_router
 from src.api import SessionDep
-from src.database import PrivateUser, Generation, TableGeneration, get_session
+from src.database import PrivateUser, Generation, TableGeneration, TableTemplate, get_session
 from src.utils import users as uu
 from src.utils import templates as ut
-from src.models import GenerateRequest, AccountRequest, GeneratePDFRequest
+from src.models import GenerateRequest, AccountRequest, GeneratePDFRequest, TemplateCreate
 from src.utils.generate_lim import generate_lims
 from src.utils.generations import create_genertion, list_generations
 from src.utils.templates import get_user_templates
@@ -144,15 +144,19 @@ def account(request: Request, session: SessionDep, data: AccountRequest):
         url = f"/primer_list?problems={encoded}"
         return RedirectResponse(url=url, status_code=302)
 
-    if data.btn == "dell":
+    if data.btn == "dell_gen":
         generations = list_generations(current_user.id, session)
         generation_to_delete = generations[data.index]
         session.delete(generation_to_delete)
         session.commit()
         return RedirectResponse(url="/account", status_code=302)
 
-    if data.btn == "gen":
-        pass
+    if data.btn == "dell_templ":
+        templates = get_user_templates(current_user.id, session)
+        templates_to_delete = templates[data.index]
+        session.delete(templates_to_delete)
+        session.commit()
+        return RedirectResponse(url="/account", status_code=302)
 
 
 @app.get("/main", response_class=HTMLResponse)
@@ -253,3 +257,21 @@ async def generate_pdf(request: Request, session: SessionDep, data: GeneratePDFR
         file_path,
         filename="file.pdf"
     )
+    
+@app.post("/create_templ")
+async def add_template(request: Request, session: SessionDep, template_data: TemplateCreate):
+    current_user = get_current_user_from_request(request, session)
+    
+    if not current_user:
+        return RedirectResponse(url="/login", status_code=302)
+    
+    user_templates_count = session.query(TableTemplate).filter(TableTemplate.user_id == current_user.id).count()
+    
+    if user_templates_count >= 5:
+        return JSONResponse(status_code=400,content={"error": "Лимит генераций", "message": "Удалите 1 генерацию", "current_count": user_templates_count, "limit": 5})
+    
+    template = TableTemplate(user_id=current_user.id, title=template_data.title, repr=template_data.repr)
+    session.add(template)
+    session.commit()
+    session.refresh(template)
+    return RedirectResponse(url="/account", status_code=302)

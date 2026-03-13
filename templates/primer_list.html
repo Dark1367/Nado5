@@ -19,6 +19,11 @@
   </header>
 
   <main class="main">
+     <div class="back-button-container">
+        <button class="back-button" onclick="goBack()" aria-label="Назад">
+          Назад
+        </button>
+    </div>
     <div class="prosmotr-primerov" id="examples-container">
       <div id="problems-list">
         {% if problems %}
@@ -97,6 +102,39 @@
         }
       }
     };
+  </script>
+  <script>
+      function goBack() {
+          const returnUrl = sessionStorage.getItem('returnTo');
+          if (returnUrl) {
+              sessionStorage.removeItem('returnTo');
+              window.location.href = returnUrl;
+              return;
+          }
+          if (document.referrer && !document.referrer.includes(window.location.href)) {
+              window.location.href = document.referrer;
+              return;
+          }
+          if (window.history.length > 1) {
+              window.history.back();
+              return;
+          }
+          window.location.href = '/main';
+      }
+      
+      document.addEventListener('DOMContentLoaded', function() {
+          if (document.referrer && !document.referrer.includes(window.location.href)) {
+              sessionStorage.setItem('returnTo', document.referrer);
+          }
+          const urlParams = new URLSearchParams(window.location.search);
+          const source = urlParams.get('source');
+          if (source === 'account') {
+              sessionStorage.setItem('returnTo', '/account');
+          } 
+          else if (source === 'generate') {
+              sessionStorage.setItem('returnTo', '/generate');
+          }
+      });
   </script>
 </body>
 </html>
