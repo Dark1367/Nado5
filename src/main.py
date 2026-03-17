@@ -32,7 +32,7 @@ SECRET_KEY = "your-secret-key-change-in-production"
 ALGORITHM = "HS256"
 
 
-def create_access_token(data: dict, expires_delta: timedelta = None):
+async def create_access_token(data: dict, expires_delta: timedelta = None):
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
@@ -43,7 +43,7 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     return encoded_jwt
 
 
-def get_current_user_from_request(request: Request, session: SessionDep):
+async def get_current_user_from_request(request: Request, session: SessionDep):
     token = request.cookies.get("access_token")
     if token:
         try:
@@ -56,7 +56,7 @@ def get_current_user_from_request(request: Request, session: SessionDep):
 
 
 @app.get("/", response_class=HTMLResponse)
-def home(request: Request, session: SessionDep):
+async def home(request: Request, session: SessionDep):
     current_user = get_current_user_from_request(request, session)
 
     if not current_user:
@@ -66,30 +66,30 @@ def home(request: Request, session: SessionDep):
 
 
 @app.get("/login", response_class=HTMLResponse)
-def login_page(request: Request):
+async def login_page(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
 
 
 @app.post("/login")
-def login(request: Request, session: SessionDep, login: str = Form(...), password: str = Form(...)):
+async def login(request: Request, session: SessionDep, login: str = Form(...), password: str = Form(...)):
     current_user = uu.get_by_email(login, session)
     if current_user is None:
         return templates.TemplateResponse("Login.html", {"request": request, "error": "Неправильно введён логин"})
     if current_user.password_hash != uu.make_hash(PrivateUser(email=login, password=password)):
         return templates.TemplateResponse("Login.html", {"request": request, "error": "Неправильно введён пароль"})
-    token = create_access_token(data={"sub": login})
+    token = await create_access_token(data={"sub": login})
     response = RedirectResponse(url="/", status_code=302)
     response.set_cookie("access_token", token, httponly=True)
     return response
 
 
 @app.get("/register", response_class=HTMLResponse)
-def register_page(request: Request):
+async def register_page(request: Request):
     return templates.TemplateResponse("register.html", {"request": request})
 
 
 @app.post("/register", response_class=HTMLResponse)
-def register(
+async def register(
     request: Request,
     session: SessionDep,
     login: str = Form(...),
@@ -110,49 +110,49 @@ def register(
         return templates.TemplateResponse("register.html", {"request": request, "error": "Пароли не соответствуют"})
     user = PrivateUser(email=login, password=password)
     uu.create_user(user, session)
-    token = create_access_token(data={"sub": login})
+    token = await create_access_token(data={"sub": login})
     response = RedirectResponse(url="/", status_code=302)
     response.set_cookie("access_token", token, httponly=True)
     return response
 
 
 @app.get("/logout")
-def logout(request: Request):
+async def logout(request: Request):
     response = RedirectResponse(url="/login", status_code=302)
     response.delete_cookie("access_token")
     return response
 
 
 @app.get("/account", response_class=HTMLResponse)
-def account(request: Request, session: SessionDep):
-    current_user = get_current_user_from_request(request, session)
+async def account(request: Request, session: SessionDep):
+    current_user = await get_current_user_from_request(request, session)
 
     if not current_user:
         return RedirectResponse(url="/login", status_code=302)
-    tmpls = ut.get_user_templates(current_user.id, session)
+    tmpls = await ut.get_user_templates(current_user.id, session)
     return templates.TemplateResponse("account.html", {"request": request, "user": current_user, "templates": tmpls})
 
 
 @app.post("/account")
-def account(request: Request, session: SessionDep, data: AccountRequest):
-    current_user = get_current_user_from_request(request, session)
+async def account(request: Request, session: SessionDep, data: AccountRequest):
+    current_user = await get_current_user_from_request(request, session)
 
     if data.btn == "show":
-        generations = list_generations(current_user.id, session)
+        generations = await list_generations(current_user.id, session)
         json_data = json.dumps(str(generations[data.index].id))
         encoded = base64.urlsafe_b64encode(json_data.encode()).decode()
         url = f"/primer_list?problems={encoded}"
         return RedirectResponse(url=url, status_code=302)
 
     if data.btn == "dell_gen":
-        generations = list_generations(current_user.id, session)
+        generations = await list_generations(current_user.id, session)
         generation_to_delete = generations[data.index]
         session.delete(generation_to_delete)
         session.commit()
         return RedirectResponse(url="/account", status_code=302)
 
     if data.btn == "dell_templ":
-        templates = get_user_templates(current_user.id, session)
+        templates = await get_user_templates(current_user.id, session)
         templates_to_delete = templates[data.index]
         session.delete(templates_to_delete)
         session.commit()
@@ -160,7 +160,7 @@ def account(request: Request, session: SessionDep, data: AccountRequest):
 
 
 @app.get("/main", response_class=HTMLResponse)
-def main(request: Request, session: SessionDep):
+async def main(request: Request, session: SessionDep):
     current_user = get_current_user_from_request(request, session)
 
     if not current_user:
@@ -170,13 +170,13 @@ def main(request: Request, session: SessionDep):
 
 
 @app.get("/generate", response_class=HTMLResponse)
-def generate(request: Request, session: SessionDep):
-    current_user = get_current_user_from_request(request, session)
+async  def generate(request: Request, session: SessionDep):
+    current_user = await get_current_user_from_request(request, session)
 
     if not current_user:
         return RedirectResponse(url="/login", status_code=302)
 
-    tmpls = ut.get_user_templates(current_user.id, session)
+    tmpls = await ut.get_user_templates(current_user.id, session)
     return templates.TemplateResponse("generate.html", {"request": request, "user": current_user, "templates": tmpls})
 
 
@@ -205,7 +205,7 @@ async def primer_list(request: Request, session: SessionDep):
 
 @app.post("/generate")
 async def generate(request: Request, session: SessionDep, data: GenerateRequest):
-    current_user = get_current_user_from_request(request, session)
+    current_user = await get_current_user_from_request(request, session)
 
     if not current_user:
         return RedirectResponse(url="/login", status_code=302)
@@ -218,7 +218,7 @@ async def generate(request: Request, session: SessionDep, data: GenerateRequest)
     gen = Generation()
     gen.templates = [0, 1, 2, 3, 4, 5, 6]
     gen.counters = data.values
-    table_gen =  create_genertion(current_user.id, gen, session)
+    table_gen = await create_genertion(current_user.id, gen, session)
 
     json_data = json.dumps(str(table_gen.id))
     encoded = base64.urlsafe_b64encode(json_data.encode()).decode()
@@ -228,16 +228,16 @@ async def generate(request: Request, session: SessionDep, data: GenerateRequest)
 
 @app.get("/get_user_info")
 async def get_user_info(request: Request, session: SessionDep):
-    current_user = get_current_user_from_request(request, session)
+    current_user = await get_current_user_from_request(request, session)
 
-    generations = list_generations(current_user.id, session)
+    generations = await list_generations(current_user.id, session)
 
     gen_tab = ["", "", "", "", ""]
     for i in range(min(len(gen_tab), len(generations))):
         date = datetime.fromtimestamp(generations[i].creating_time)
         gen_tab[i] = f"Генерация от {date.day}.{date.month}"
 
-    templates = get_user_templates(current_user.id, session)
+    templates = await get_user_templates(current_user.id, session)
 
     temp_tab = ["", "", "", "", ""]
     for i in range(min(len(temp_tab), len(templates))):
@@ -252,7 +252,7 @@ async def get_user_info(request: Request, session: SessionDep):
 @app.post("/generate_pdf")
 async def generate_pdf(request: Request, session: SessionDep, data: GeneratePDFRequest):
     file_path = "primer_list.pdf"
-    create_pdf(data.problems)
+    await create_pdf(data.problems)
     return FileResponse(
         file_path,
         filename="file.pdf"
@@ -260,7 +260,7 @@ async def generate_pdf(request: Request, session: SessionDep, data: GeneratePDFR
     
 @app.post("/create_templ")
 async def add_template(request: Request, session: SessionDep, template_data: TemplateCreate):
-    current_user = get_current_user_from_request(request, session)
+    current_user = await get_current_user_from_request(request, session)
     
     if not current_user:
         return RedirectResponse(url="/login", status_code=302)
