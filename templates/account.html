@@ -10,6 +10,14 @@
 </head>
 
 <body>
+    {% if error %}
+    <div class="alerts-container">
+        <div class="custom-alert">
+            <div class="alert-text">У вас не осталось места для хранения шаблонов, пожалуйста, очистите пространство для
+                новых!</div>
+        </div>
+    </div>
+    {% endif %}
 
     <header class="header">
         <button class="logo" onclick="window.location.href='../main'" aria-label="На главную">
@@ -272,6 +280,7 @@
                     addTemplateForm.addEventListener('submit', async function(e) {e.preventDefault(); const formData = new FormData(this);
                         const data = {title: formData.get('title'), repr: formData.get('repr')};
                         const response = await fetch('/create_templ', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data)});
+                        const contentType = response.headers.get('content-type');
                         if (response.redirected) {
                             const modal = document.getElementById('addTemplateModal');
                             const bootstrapModal = bootstrap.Modal.getInstance(modal);
@@ -279,6 +288,13 @@
                                 bootstrapModal.hide();
                             }
                             window.location.href = response.url;
+                        } else if (contentType && contentType.includes('text/html')) {
+                            const html = await response.text()
+                            const tempDiv = document.createElement('div');
+                            tempDiv.innerHTML = html;
+                            document.open();
+                            document.write(html);
+                            document.close();
                         }
                     });
                 }

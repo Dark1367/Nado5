@@ -213,7 +213,7 @@ async def generate(request: Request, session: SessionDep, data: GenerateRequest)
     user_generations_count = session.query(TableGeneration).filter(TableGeneration.user_id == current_user.id).count()
     
     if user_generations_count >= 5:
-        return JSONResponse(status_code=400,content={"error": "Лимит генераций", "message": "Удалите 1 генерацию", "current_count": user_generations_count, "limit": 5})
+        return templates.TemplateResponse("Generate.html", {"request": request, "error": True})
 
     gen = Generation()
     gen.templates = [0, 1, 2, 3, 4, 5, 6]
@@ -268,8 +268,9 @@ async def add_template(request: Request, session: SessionDep, template_data: Tem
     user_templates_count = session.query(TableTemplate).filter(TableTemplate.user_id == current_user.id).count()
     
     if user_templates_count >= 5:
-        return JSONResponse(status_code=400,content={"error": "Лимит генераций", "message": "Удалите 1 генерацию", "current_count": user_templates_count, "limit": 5})
-    
+        tmpls = ut.get_user_templates(current_user.id, session)
+        return templates.TemplateResponse("Account.html", {"request": request, "error": True, "user": current_user, "templates": tmpls})
+
     template = TableTemplate(user_id=current_user.id, title=template_data.title, repr=template_data.repr)
     session.add(template)
     session.commit()

@@ -4,42 +4,61 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="../static/styles.css">
+  <link rel="stylesheet" href="static/styles.css">
   <title>LimGen | Главная</title>
 </head>
 
 <body>
-
-  <header class="header">
-    <button class="logo" onclick="window.location.href='../main'" aria-label="На главную">
-      <img src="../static/logo.png" alt="Логотип">
-    </button>
-
-    <div class="nav-menu">
-      <a href="/account">Профиль</a>
+  <header class="navbar">
+    <div class="container nav-flex">
+      <button class="logo-btn" onclick="window.location.href='/main'" aria-label="На главную">
+        <img src="static/logo.png" alt="LimGen" class="nav-logo">
+      </button>
+      <nav class="nav-menu">
+        <a href="/account" class="profile-link">Профиль</a>
+      </nav>
     </div>
   </header>
 
-  <main class="main">
-    <div class="circle">
-      <p>LimGen - это Web-сервис генерации задач по пределам последовательности, созданный студентами РТУ МИРЭА, для
-        помощи преподавателям</p>
-      <h1>🎓</h1>
-    </div>
-
-    <p class="subtitle">Добро пожаловать в систему оценки знаний</p>
-
-    <div class="buttongen">
-      <button class="btn" onclick="location.href='/generate'">Начать генерацию!</button>
+  <main class="hero-section">
+    <div class="container hero-grid">
+      <div class="hero-text">
+        <span class="badge">РТУ МИРЭА</span>
+        <h1>Генерация задач по пределам</h1>
+        <p><strong>LimGen</strong> — это Web-сервис, созданный студентами для помощи преподавателям в автоматизации
+          оценки знаний по пределам последовательностей.</p>
+        <div class="cta-group">
+          <button class="cta-button" onclick="window.location.href='/generate'">Начать генерацию!</button>
+          <p class="subtitle-small">Добро пожаловать в систему</p>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="visual-card">
+          <div class="formula-background">
+            <span class="formula f1">lim (n→∞) 1/n = 0</span>
+            <span class="formula f2">lim (x→0) sin(x)/x = 1</span>
+            <span class="formula f3">lim (1 + 1/n)ⁿ = e</span>
+            <span class="formula f4">|aₙ - A| < ε</span>
+                <span class="formula f5">∑ qⁿ = q/(1-q)</span>
+                <span class="formula f6">∀ε > 0 ∃N</span>
+                <span class="formula f7">f(x) → L</span>
+          </div>
+          <span class="main-emoji">🎓</span>
+        </div>
+      </div>
     </div>
   </main>
 
-  <footer class="footer">
-    <p>© 2025 LimGen. Все права защищены.</p>
-    <p>Разработано студентами <strong>РТУ МИРЭА</strong> | <a href="#">GitHub проекта</a></p>
-    <p><a href="https://t.me/AboutMathematics">О математике. ВУЗ😉</a> | Telegram канал</p>
+  <footer class="main-footer">
+    <div class="container footer-grid">
+      <div class="footer-item">
+        <p>© 2025 LimGen. Все права защищены.</p>
+      </div>
+      <div class="footer-item">
+        <p>Разработано студентами <strong>РТУ МИРЭА</strong> | <a href="#">GitHub проекта</a></p>
+      </div>
+    </div>
   </footer>
-
 </body>
 
 </html>
