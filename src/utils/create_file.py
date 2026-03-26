@@ -2,7 +2,7 @@ import asyncio
 import matplotlib.pyplot as plt
 
 
-def create_pdf(problems):
+async def create_pdf(problems):
     plt.figure(figsize=(8.27, 11.69))
     plt.axis("off")
 
@@ -23,6 +23,3 @@ def create_pdf(problems):
     plt.tight_layout()
     plt.savefig("primer_list.pdf", bbox_inches="tight")
     plt.close()
-
-if __name__ == "__main__":
-    asyncio.run(create_pdf())
