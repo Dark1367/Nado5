@@ -40,12 +40,19 @@ async def generate_lims(counts, seed):
     type_six = [generate_lim_6_1, generate_lim_6_2, generate_lim_6_3]
     type_seven = [generate_lim_7_1, generate_lim_7_2]
 
-    primers += await rand.choice(type_one)(rand, counts[0])
-    primers += await rand.choice(type_two)(rand, counts[1])
-    primers += await rand.choice(type_three)(rand, counts[2])
-    primers += await rand.choice(type_four)(rand, counts[3])
-    primers += await type_five(rand, counts[4])
-    primers += await rand.choice(type_six)(rand, counts[5])
-    primers += await rand.choice(type_seven)(rand, counts[6])
+    for _ in range(counts[0]):
+        primers += await rand.choice(type_one)(rand, 1)
+    for _ in range(counts[1]):
+        primers += await rand.choice(type_two)(rand, 1)
+    for _ in range(counts[2]):
+        primers += await rand.choice(type_three)(rand, 1)
+    for _ in range(counts[3]):
+        primers += await rand.choice(type_four)(rand, 1)
+    for _ in range(counts[4]):
+        primers += await type_five(rand, 1)
+    for _ in range(counts[5]):
+        primers += await rand.choice(type_six)(rand, 1)
+    for _ in range(counts[6]):
+        primers += await rand.choice(type_seven)(rand, 1)
 
     return primers
