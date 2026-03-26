@@ -125,7 +125,7 @@ async def generate_simple_power_limit(rand):
     
     return primer
 
-async def gen_two_five_lim(rand, n):
+async def generate_lim_2_5(rand, n):
     primers = []
     
     for i in range(n):

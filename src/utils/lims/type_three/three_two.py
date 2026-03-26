@@ -210,7 +210,7 @@ async def generate_exp_power_zero_limit_with_trig(rand):
     limit_str = f"\\lim_{{x \\to \\infty}}{{\\left({base_str}\\right)}}^{{{exponent_str}}}"
     return limit_str
 
-async def gen_three_two_lim(rand, n, variations=True, trig=True):
+async def generate_lim_3_2(rand, n, variations=True, trig=True):
     primers = []
     
     for _ in range(n):

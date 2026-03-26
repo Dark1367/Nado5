@@ -80,7 +80,7 @@ async def generate_infinity_limit(rand):
     
     return primer
 
-async def gen_two_two_lim(rand, n):
+async def generate_lim_2_2(rand, n):
     primers = []
     
     for i in range(n):

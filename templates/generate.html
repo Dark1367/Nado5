@@ -28,74 +28,28 @@
             <a href="/account">Профиль</a>
         </div>
     </header>
-
+    
     <main class="main">
+    
         <div class="settings-container">
             <div class="settings-card">
                 <h1 class="settings-title">Настройки генерации</h1>
 
+                {% for template in templates %}
                 <div class="setting-item">
-                    <span class="setting-label">1. Единица в степени бесконечность</span>
-                    <div class="number-input">
-                        <button class="number-btn minus" type="button">−</button>
-                        <input type="number" class="number-field" value="0" min="0" max="100">
-                        <button class="number-btn plus" type="button">+</button>
-                    </div>
-                </div>
+                    <span class="setting-label">{{ template.title }}</span>
 
-                <div class="setting-item">
-                    <span class="setting-label">2. Ноль в степени ноль</span>
-                    <div class="number-input">
-                        <button class="number-btn minus" type="button">−</button>
-                        <input type="number" class="number-field" value="0" min="0" max="100">
-                        <button class="number-btn plus" type="button">+</button>
+                    <div class="example-value">
+                        $${{ template.repr }}$$
                     </div>
-                </div>
 
-                <div class="setting-item">
-                    <span class="setting-label">3. Бесконечность в степени ноль</span>
                     <div class="number-input">
                         <button class="number-btn minus" type="button">−</button>
                         <input type="number" class="number-field" value="0" min="0" max="100">
                         <button class="number-btn plus" type="button">+</button>
                     </div>
                 </div>
-
-                <div class="setting-item">
-                    <span class="setting-label">4. Бесконечность делить на бесконечность</span>
-                    <div class="number-input">
-                        <button class="number-btn minus" type="button">−</button>
-                        <input type="number" class="number-field" value="0" min="0" max="100">
-                        <button class="number-btn plus" type="button">+</button>
-                    </div>
-                </div>
-
-                <div class="setting-item">
-                    <span class="setting-label">5. Ноль делить на ноль</span>
-                    <div class="number-input">
-                        <button class="number-btn minus" type="button">−</button>
-                        <input type="number" class="number-field" value="0" min="0" max="100">
-                        <button class="number-btn plus" type="button">+</button>
-                    </div>
-                </div>
-
-                <div class="setting-item">
-                    <span class="setting-label">6. Бесконечность умножить на ноль</span>
-                    <div class="number-input">
-                        <button class="number-btn minus" type="button">−</button>
-                        <input type="number" class="number-field" value="0" min="0" max="100">
-                        <button class="number-btn plus" type="button">+</button>
-                    </div>
-                </div>
-
-                <div class="setting-item">
-                    <span class="setting-label">7. Бесконечность минус бесконечность</span>
-                    <div class="number-input">
-                        <button class="number-btn minus" type="button">−</button>
-                        <input type="number" class="number-field" value="0" min="0" max="100">
-                        <button class="number-btn plus" type="button">+</button>
-                    </div>
-                </div>
+                {% endfor %}
 
                 <div class="setting-options">
 
@@ -108,8 +62,6 @@
                     </div>
                 </div>
 
-
-
                 <button class="generate-btn">Сгенерировать</button>
             </div>
         </div>
@@ -118,7 +70,6 @@
     <footer class="footer">
         <p>© 2025 LimGen. Все права защищены.</p>
         <p>Разработано студентами <strong>РТУ МИРЭА</strong> | <a href="#">GitHub проекта</a></p>
-        <p><a href="https://t.me/AboutMathematics">О математике. ВУЗ😉</a> | Telegram канал</p>
     </footer>
 
     <script>
@@ -212,6 +163,17 @@
             });
         });
     </script>
-</body>
-
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </html>

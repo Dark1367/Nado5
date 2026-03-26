@@ -34,7 +34,7 @@ async def generate_log_limit(rand):
     primer = f"\\lim_{{x \\to 1}}\\left(\\frac{{\\ln\\left({arg1}\\right)}}{{\\ln\\left({arg2}\\right)}}\\right)^{{\\frac{{1}}{{x-1}}}}"
     return primer, A, B, C, D
 
-async def gen_one_five_lim(rand, n):
+async def generate_lim_1_5(rand, n):
     primers = []
     for _ in range(n):
         primer, A, B, C, D = await generate_log_limit(rand)

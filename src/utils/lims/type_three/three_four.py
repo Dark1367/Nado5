@@ -352,7 +352,7 @@ async def generate_polynomial_power_sum_limit_with_diff_polys(rand):
     limit_str = f"\\lim_{{x \\rightarrow \\infty}}{{\\left({P_x}\\right)}}^{{{exponent_str}}}"
     return limit_str
 
-async def gen_three_four_lim(rand, n, variations=True):
+async def generate_lim_3_4(rand, n, variations=True):
     primers = []
     
     for _ in range(n):

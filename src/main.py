@@ -176,7 +176,7 @@ def generate(request: Request, session: SessionDep):
     if not current_user:
         return RedirectResponse(url="/login", status_code=302)
 
-    tmpls = ut.get_user_templates(current_user.id, session)
+    tmpls = ut.get_user_templates(0, session) + ut.get_user_templates(current_user.id, session)
     return templates.TemplateResponse("generate.html", {"request": request, "user": current_user, "templates": tmpls})
 
 
@@ -195,11 +195,9 @@ async def primer_list(request: Request, session: SessionDep):
     ses = next(get_session())
     results = ses.exec(statement)
     table_gen = results.first()
-
     problems = await generate_lims(table_gen.counters, str(table_gen.seed))
 
     ses.close()
-
     return templates.TemplateResponse("primer_list.html", {"request": request, "user": current_user, "problems": problems})
 
 
@@ -216,7 +214,7 @@ async def generate(request: Request, session: SessionDep, data: GenerateRequest)
         return templates.TemplateResponse("Generate.html", {"request": request, "error": True})
 
     gen = Generation()
-    gen.templates = [0, 1, 2, 3, 4, 5, 6]
+    gen.templates = [x for x in range(len(data.values))]
     gen.counters = data.values
     table_gen =  create_genertion(current_user.id, gen, session)
 

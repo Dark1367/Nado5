@@ -203,7 +203,7 @@ async def generate_general_limit(rand):
     primer = f"{limit_expr}\\left(\\frac{{{P_str}}}{{{Q_str}}}\\right)^{{{{{R_str}}}}}"
     return primer
 
-async def gen_one_two_lim(rand, n):
+async def generate_lim_1_2(rand, n):
     primers = []
     for _ in range(n):
         primer = await generate_general_limit(rand)
