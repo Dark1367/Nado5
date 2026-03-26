@@ -176,11 +176,7 @@ async  def generate(request: Request, session: SessionDep):
     if not current_user:
         return RedirectResponse(url="/login", status_code=302)
 
-<<<<<<< HEAD
-    tmpls = ut.get_user_templates(0, session) + ut.get_user_templates(current_user.id, session)
-=======
-    tmpls = await ut.get_user_templates(current_user.id, session)
->>>>>>> 86821268f5c58daf9b0449f207f7251e282afbb7
+    tmpls = await ut.get_user_templates(0, session) + await ut.get_user_templates(current_user.id, session)
     return templates.TemplateResponse("generate.html", {"request": request, "user": current_user, "templates": tmpls})
 
 

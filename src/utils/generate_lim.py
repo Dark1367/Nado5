@@ -49,17 +49,10 @@ async def generate_lims(counts, seed):
     for _ in range(counts[3]):
         primers += await rand.choice(type_four)(rand, 1)
     for _ in range(counts[4]):
-<<<<<<< HEAD
         primers += await rand.choice(type_five)(rand, 1)
-=======
-        primers += await type_five(rand, 1)
->>>>>>> 4f19ad7a4d0ffcbb1c1f58b8f195deb69399d329
     for _ in range(counts[5]):
         primers += await rand.choice(type_six)(rand, 1)
     for _ in range(counts[6]):
         primers += await rand.choice(type_seven)(rand, 1)
-<<<<<<< HEAD
-=======
 
->>>>>>> 4f19ad7a4d0ffcbb1c1f58b8f195deb69399d329
     return primers
