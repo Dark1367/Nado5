@@ -11,12 +11,20 @@
 
 <body>
     {% if error %}
-    <div class="alerts-container">
+    <div class="alerts-container" id="error">
         <div class="custom-alert">
             <div class="alert-text">У вас не осталось места для хранения шаблонов, пожалуйста, очистите пространство для
                 новых!</div>
         </div>
     </div>
+        <script>
+        setTimeout(function() {
+            const widget = document.getElementById('error');
+            if (widget && !widget.classList.contains('hidden')) {
+                widget.classList.add('hidden');
+            }
+        }, 5000);
+        </script>
     {% endif %}
 
     <header class="header">
