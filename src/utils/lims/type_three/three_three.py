@@ -219,7 +219,7 @@ async def generate_root_power_zero_limit_variations(rand):
     
     return limit_str
 
-async def gen_three_three_lim(rand, n, variations=True):
+async def generate_lim_3_3(rand, n, variations=True):
     primers = []
     
     for _ in range(n):

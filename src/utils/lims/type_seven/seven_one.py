@@ -102,7 +102,7 @@ async def alternating(rand):
     bot = f"1 + {s} + {s}^2 + {s}^3 + \\cdots + {s}^n"
     return f"\\lim_{{n \\to \\infty}} \\frac{{{top}}}{{{bot}}}"
 
-async def generate_limit(rand):
+async def generate_limit_7_1(rand):
     v = rand.randint(1, 4)
 
     if v == 1:
@@ -117,5 +117,5 @@ async def generate_limit(rand):
 async def generate_lim_7_1(rand, n):
     primer = []
     for _ in range(n):
-        primer.append(await generate_limit(rand))
+        primer.append(await generate_limit_7_1(rand))
     return primer

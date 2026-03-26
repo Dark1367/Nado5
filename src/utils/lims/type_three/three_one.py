@@ -35,7 +35,7 @@ async def generate_inf_power_zero_limit(rand):
     
     return limit_str
 
-async def gen_three_one_lim(rand, n):
+async def generate_lim_3_1(rand, n):
     primers = []
     for _ in range(n):
         primer = await generate_inf_power_zero_limit(rand)

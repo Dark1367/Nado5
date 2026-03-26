@@ -127,7 +127,7 @@ async def generate_root_limit(rand):
     
     return primer
 
-async def gen_two_three_lim(rand, n):
+async def generate_lim_2_3(rand, n):
     primers = []
     
     for i in range(n):

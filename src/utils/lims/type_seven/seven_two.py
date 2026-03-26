@@ -1,7 +1,7 @@
 from src.utils.Random import Random
 import os
 
-async def generate_limit(rand):
+async def generate_limit_7_2(rand):
     a1 = rand.randint(1, 5)
     d1 = rand.randint(1, 4)
     a2 = rand.randint(3, 8)
@@ -43,5 +43,5 @@ async def generate_limit(rand):
 async def generate_lim_7_2(rand, n):
     primer = []
     for _ in range(n):
-        primer.append(await generate_limit(rand))
+        primer.append(await generate_limit_7_2(rand))
     return primer

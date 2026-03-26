@@ -119,7 +119,7 @@ async def generate_polynomial_power_limit(rand):
     
     return primer
 
-async def gen_two_four_lim(rand, n):
+async def generate_lim_2_4(rand, n):
     primers = []
     
     for i in range(n):

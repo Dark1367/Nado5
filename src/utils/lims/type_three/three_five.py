@@ -327,7 +327,7 @@ async def generate_trig_power_limit_with_exponential(rand):
     
     return limit_str
 
-async def gen_three_five_lim(rand, n, variations=True):
+async def generate_lim_3_5(rand, n, variations=True):
     primers = []
     
     for _ in range(n):

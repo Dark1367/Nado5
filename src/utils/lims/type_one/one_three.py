@@ -210,7 +210,7 @@ async def generate_root_limit(rand):
     primer = f"\\lim_{{x \\to \\infty}}\\left({root_symbol}{inside}\\right)^{{{stepen_str}}}"
     return primer
 
-async def gen_one_three_lim(rand, n):
+async def generate_lim_1_3(rand, n):
     primers = []
     for _ in range(n):
         primer = await generate_root_limit(rand)

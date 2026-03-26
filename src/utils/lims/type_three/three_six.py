@@ -274,7 +274,7 @@ async def generate_log_power_limit_with_trig(rand):
     
     return limit_str
 
-async def gen_three_six_lim(rand, n, variations=True):
+async def generate_lim_3_6(rand, n, variations=True):
     primers = []
     
     for _ in range(n):

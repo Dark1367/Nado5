@@ -35,7 +35,7 @@ async def generate_exp_limit(rand):
     primer = f"\\lim_{{x \\to 0}}\\left(\\frac{{{exp1}+{exp2}}}{{{denominator}}}\\right)^{{{exponent}}}"
     return primer
 
-async def gen_one_four_lim(rand, n):
+async def generate_lim_1_4(rand, n):
     primers = []
     for _ in range(n):
         primer = await generate_exp_limit(rand)

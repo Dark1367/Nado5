@@ -1,21 +1,21 @@
 from hashlib import sha256
 from src.utils.Random import Random
-from src.utils.lims.type_one.one_one import gen_one_one_lim
-from src.utils.lims.type_one.one_two import gen_one_two_lim
-from src.utils.lims.type_one.one_three import gen_one_three_lim
-from src.utils.lims.type_one.one_four import gen_one_four_lim
-from src.utils.lims.type_one.one_five import gen_one_five_lim
-from src.utils.lims.type_two.two_one import gen_two_one_lim
-from src.utils.lims.type_two.two_two import gen_two_two_lim
-from src.utils.lims.type_two.two_three import gen_two_three_lim
-from src.utils.lims.type_two.two_four import gen_two_four_lim
-from src.utils.lims.type_two.two_five import gen_two_five_lim
-from src.utils.lims.type_three.three_one import gen_three_one_lim
-from src.utils.lims.type_three.three_two import gen_three_two_lim
-from src.utils.lims.type_three.three_three import gen_three_three_lim
-from src.utils.lims.type_three.three_four import gen_three_four_lim
-from src.utils.lims.type_three.three_five import gen_three_five_lim
-from src.utils.lims.type_three.three_six import gen_three_six_lim
+from src.utils.lims.type_one.one_one import generate_lim_1_1
+from src.utils.lims.type_one.one_two import generate_lim_1_2
+from src.utils.lims.type_one.one_three import generate_lim_1_3
+from src.utils.lims.type_one.one_four import generate_lim_1_4
+from src.utils.lims.type_one.one_five import generate_lim_1_5
+from src.utils.lims.type_two.two_one import generate_lim_2_1
+from src.utils.lims.type_two.two_two import generate_lim_2_2
+from src.utils.lims.type_two.two_three import generate_lim_2_3
+from src.utils.lims.type_two.two_four import generate_lim_2_4
+from src.utils.lims.type_two.two_five import generate_lim_2_5
+from src.utils.lims.type_three.three_one import generate_lim_3_1
+from src.utils.lims.type_three.three_two import generate_lim_3_2
+from src.utils.lims.type_three.three_three import generate_lim_3_3
+from src.utils.lims.type_three.three_four import generate_lim_3_4
+from src.utils.lims.type_three.three_five import generate_lim_3_5
+from src.utils.lims.type_three.three_six import generate_lim_3_6
 from src.utils.lims.type_four.four_one import generate_lim_4_1
 from src.utils.lims.type_four.four_two import generate_lim_4_2
 from src.utils.lims.type_four.four_three import generate_lim_4_3
@@ -32,11 +32,11 @@ import os
 async def generate_lims(counts, seed):
     rand = Random(seed)
     primers = []
-    type_one = [gen_one_one_lim, gen_one_two_lim, gen_one_three_lim, gen_one_four_lim, gen_one_five_lim]
-    type_two = [gen_two_one_lim, gen_two_two_lim, gen_two_three_lim, gen_two_four_lim, gen_two_five_lim]
-    type_three = [gen_three_one_lim, gen_three_two_lim, gen_three_three_lim, gen_three_four_lim, gen_three_five_lim, gen_three_six_lim]
+    type_one = [generate_lim_1_2] # generate_lim_1_2, generate_lim_1_3, generate_lim_1_4, generate_lim_1_5]
+    type_two = [generate_lim_2_1, generate_lim_2_2, generate_lim_2_3, generate_lim_2_4, generate_lim_2_5]
+    type_three = [generate_lim_3_1, generate_lim_3_2, generate_lim_3_3, generate_lim_3_4, generate_lim_3_5, generate_lim_3_6]
     type_four = [generate_lim_4_1, generate_lim_4_2, generate_lim_4_3, generate_lim_4_4, generate_lim_4_5]
-    type_five = generate_lim_5_1
+    type_five = [generate_lim_5_1]
     type_six = [generate_lim_6_1, generate_lim_6_2, generate_lim_6_3]
     type_seven = [generate_lim_7_1, generate_lim_7_2]
 
@@ -49,10 +49,17 @@ async def generate_lims(counts, seed):
     for _ in range(counts[3]):
         primers += await rand.choice(type_four)(rand, 1)
     for _ in range(counts[4]):
+<<<<<<< HEAD
+        primers += await rand.choice(type_five)(rand, 1)
+=======
         primers += await type_five(rand, 1)
+>>>>>>> 4f19ad7a4d0ffcbb1c1f58b8f195deb69399d329
     for _ in range(counts[5]):
         primers += await rand.choice(type_six)(rand, 1)
     for _ in range(counts[6]):
         primers += await rand.choice(type_seven)(rand, 1)
+<<<<<<< HEAD
+=======
 
+>>>>>>> 4f19ad7a4d0ffcbb1c1f58b8f195deb69399d329
     return primers
