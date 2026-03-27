@@ -33,14 +33,24 @@ async def chlen(rand, n=None, allow_trig=False, force_nonzero=False):
                 mult = rand.randint(-10, 10)
                 if not force_nonzero or mult != 0:
                     break
-            s = f"{mult}x{f"^{{{deg}}}" if deg != 1 else ""}"
+            s_mult = mult
+            if s_mult == 1:
+                s_mult = ""
+            if s_mult == -1:
+                s_mult = "-"
+            s = f"{s_mult}x{f"^{{{deg}}}" if deg != 1 else ""}"
         else:
             deg = n
             while True:
                 mult = rand.randint(-10, 10)
                 if not force_nonzero or mult != 0:
                     break
-            s = f"{mult}\\sqrt{{x{f"^{{{int(deg * 2)}}}" if deg * 2 != 1 else ""}}}"
+            s_mult = mult
+            if s_mult == 1:
+                s_mult = ""
+            if s_mult == -1:
+                s_mult = "-"
+            s = f"{s_mult}\\sqrt{{x{f"^{{{int(deg * 2)}}}" if deg * 2 != 1 else ""}}}"
         return s, deg, str(mult)
 
     if type == 1:
@@ -49,7 +59,15 @@ async def chlen(rand, n=None, allow_trig=False, force_nonzero=False):
             if not force_nonzero or mult != 0:
                 break
         deg = rand.randint(-3, 3)
-        s = f"{mult}x{f"^{{{deg}}}" if deg != 1 else ""}"
+        if deg != 0:
+            s_mult = mult
+            if s_mult == 1:
+                s_mult = ""
+            if s_mult == -1:
+                s_mult = "-"
+            s = f"{s_mult}x{f"^{{{deg}}}" if deg != 1 else ""}"
+        else:
+            s = f"{mult}"
 
     if type == 2:
         while True:
@@ -59,7 +77,12 @@ async def chlen(rand, n=None, allow_trig=False, force_nonzero=False):
         deg = rand.randint(-6, 6)/2
         if deg%1==0:
             deg = int(deg)
-        s = f"{mult}\\sqrt{{x{f"^{{{int(deg*2)}}}" if deg*2 != 1 else ""}}}"
+        s_mult = mult
+        if s_mult == 1:
+            s_mult = ""
+        if s_mult == -1:
+            s_mult = "-"
+        s = f"{s_mult}\\sqrt{{x{f"^{{{int(deg*2)}}}" if deg*2 != 1 else ""}}}"
 
     if type == 3:
         while True:
@@ -96,7 +119,7 @@ async def mnogochlen(rand, max_n=None, guaranteed_degree=None, allow_trig=False)
     nums[deg] = mult
 
     for i in range(n):
-        s, deg, mult = await chlen(rand, None, allow_trig=allow_trig, force_nonzero=False)
+        s, deg, mult = await chlen(rand, None, allow_trig=allow_trig, force_nonzero=True)
         deg = str(deg)
         parts.append(s)
         if deg in nums:
@@ -214,5 +237,5 @@ async def generate_lim_1_3(rand, n):
     primers = []
     for _ in range(n):
         primer = await generate_root_limit(rand)
-        primers.append(primer)
+        primers.append("1.3"+primer)
     return primers

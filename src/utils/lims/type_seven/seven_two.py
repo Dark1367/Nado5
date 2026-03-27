@@ -43,5 +43,5 @@ async def generate_limit_7_2(rand):
 async def generate_lim_7_2(rand, n):
     primer = []
     for _ in range(n):
-        primer.append(await generate_limit_7_2(rand))
+        primer.append("7.2"+await generate_limit_7_2(rand))
     return primer

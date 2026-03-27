@@ -124,6 +124,6 @@ async def generate_lim_2_4(rand, n):
     
     for i in range(n):
         primer = await generate_polynomial_power_limit(rand)
-        primers.append(primer)
+        primers.append("2.4"+primer)
     
     return primers

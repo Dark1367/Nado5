@@ -367,6 +367,6 @@ async def generate_lim_3_4(rand, n, variations=True):
         else:
             primer = await generate_polynomial_power_sum_limit(rand)
         
-        primers.append(primer)
+        primers.append("3.4"+primer)
     
     return primers

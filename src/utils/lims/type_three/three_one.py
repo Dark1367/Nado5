@@ -39,5 +39,5 @@ async def generate_lim_3_1(rand, n):
     primers = []
     for _ in range(n):
         primer = await generate_inf_power_zero_limit(rand)
-        primers.append(primer)
+        primers.append("3.1"+primer)
     return primers

@@ -70,5 +70,5 @@ async def generate_lim_4_2(rand, n):
     primers = []
     for _ in range(n):
         primer, solution = await generate_lim(rand)
-        primers.append(primer)
+        primers.append("4.2"+primer)
     return primers

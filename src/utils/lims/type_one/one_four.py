@@ -19,6 +19,16 @@ async def generate_exp_limit(rand):
     D = rand.randint(-6, 6)
     while D == 0:
         D = rand.randint(-6, 6)
+
+    if A == 1:
+        A = ""
+    elif A == -1:
+        A = "-"
+
+    if B == 1:
+        B = ""
+    elif B == -1:
+        B = "-"
     
     exp1 = f"e^{{{A}x}}"
     exp2 = f"e^{{{B}x}}"
@@ -39,6 +49,6 @@ async def generate_lim_1_4(rand, n):
     primers = []
     for _ in range(n):
         primer = await generate_exp_limit(rand)
-        primers.append(primer)
+        primers.append("1.4"+primer)
     return primers
 

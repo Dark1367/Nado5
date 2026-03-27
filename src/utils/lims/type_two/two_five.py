@@ -130,7 +130,7 @@ async def generate_lim_2_5(rand, n):
     
     for i in range(n):
         primer = await generate_simple_power_limit(rand)
-        primers.append(primer)
+        primers.append("2.5"+primer)
     
     return primers
 
