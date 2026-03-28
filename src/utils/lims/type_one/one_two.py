@@ -93,7 +93,7 @@ async def chlen(rand, n=None, allow_trig=False, force_nonzero=False):
         s = str(mult)
 
     if type == 4:
-        funcs = ["sin", "cos", "tg", "ctg"]
+        funcs = ["\sin", "\cos", "\\text{tg}", "\\text{ctg}"]
         deg = 0
         mult = funcs[rand.randint(0, 3)]+"(x)"
         s = mult
@@ -158,7 +158,7 @@ async def generate_exponent(rand, allow_trig=False):
         D = rand.randint(-5, 5)
         while D == 0:
             D = rand.randint(-5, 5)
-        funcs = ["sin(x)", "cos(x)", "tg(x)", "ctg(x)"]
+        funcs = ["\sin(x)", "\cos(x)", "\\text{tg}(x)", "\\text{ctg}(x)"]
         trig = rand.choice(funcs)
         if rand.chance(50):
             return f"{D}x+{trig}"

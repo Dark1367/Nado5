@@ -56,7 +56,7 @@ async def chlen(rand, n=None, allow_trig=False, force_nonzero=False):
         return str(mult), 0, str(mult)
 
     if type == 4:
-        funcs = ["sin", "cos", "tg", "ctg"]
+        funcs = ["\sin", "\cos", "\\text{tg}", "\\text{ctg}"]
         f = funcs[rand.randint(0, 3)] + "(x)"
         return f, 0, f
 

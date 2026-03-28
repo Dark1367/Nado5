@@ -93,7 +93,7 @@ async def chlen(rand, n=None, allow_trig=False, force_nonzero=False):
         s = str(mult)
 
     if type == 4:
-        funcs = ["sin", "cos", "tg", "ctg"]
+        funcs = ["\sin", "\cos", "\\text{tg}", "\\text{ctg}"]
         deg = 0
         mult = funcs[rand.randint(0, 3)]+"(x)"
         s = mult
@@ -147,7 +147,7 @@ async def generate_linear_exponent(rand, allow_trig=False):
         while D == 0:
             D = rand.randint(-10, 10)
         E = rand.randint(-10, 10)
-        trig_funcs = ["sin(x)", "cos(x)", "tg(x)", "ctg(x)"]
+        trig_funcs = ["\sin(x)", "\cos(x)", "\\text{tg}(x)", "\\text{ctg}(x)"]
         trig = random.choice(trig_funcs)
         
         if E == 0:
