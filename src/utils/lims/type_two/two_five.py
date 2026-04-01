@@ -5,13 +5,13 @@ async def generate_coefficient(rand):
     coeff = rand.randint(-10, 10)
     while coeff == 0:
         coeff = rand.randint(-10, 10)
+
+    if coeff == 1:
+        coeff = ""
+    elif coeff == -1:
+        coeff = "-"
     
-    if coeff > 0 and rand.random() < 0.3:
-        return str(coeff)
-    elif coeff > 0:
-        return f"+{coeff}"
-    else:
-        return str(coeff)
+    return str(coeff)
 
 async def generate_simple_base(rand):
     A = await generate_coefficient(rand)
@@ -38,7 +38,11 @@ async def generate_simple_base(rand):
         m = rand.choice([-1, -2, -3])
         return f"{A}x^{{{m}}}", m
     
-    else: 
+    else:
+        if A == "":
+            A = 1
+        elif A == "-":
+            A = -1
         return str(A), 0
 
 async def generate_composite_exponent(rand):
@@ -117,7 +121,7 @@ async def generate_simple_power_limit(rand):
         primer = f"\\lim_{{x \\to 0}} \\left({base_expr}\\right)^{{{exponent_expr}}}"
     elif limit_type == 2:
         side = rand.choice(["+", "-"])
-        primer = f"\\lim_{{x \\to 0^{side}}} \\left({base_expr}\\right)^{{{exponent_expr}}}"
+        primer = f"\\lim_{{x \\to 0}} \\left({base_expr}\\right)^{{{exponent_expr}}}"
     elif limit_type == 3:
         primer = f"\\lim_{{x \\to 0}} \\left[{base_expr}\\right]^{{{exponent_expr}}}"
     else:

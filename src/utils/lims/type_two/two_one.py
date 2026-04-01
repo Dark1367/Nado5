@@ -8,6 +8,11 @@ async def generate_base_part(rand):
         A = rand.randint(-10, 10)
         while A == 0:
             A = rand.randint(-10, 10)
+
+        if A == 1:
+            A = ""
+        elif A == -1:
+            A = "-"
         
         m = rand.randint(-3, 3)
         if m == 0:
@@ -22,6 +27,11 @@ async def generate_base_part(rand):
         A = rand.randint(-10, 10)
         while A == 0:
             A = rand.randint(-10, 10)
+
+        if A == 1:
+            A = ""
+        elif A == -1:
+            A = "-"
         
         if rand.chance(70):
             base_str = f"{A}\\sqrt{{x}}"
@@ -37,7 +47,7 @@ async def generate_base_part(rand):
         return str(A)
     
     else:  
-        funcs = ["sin", "cos", "tg", "ctg"]
+        funcs = ["\sin", "\cos", "\\text{tg}", "\\text{ctg}"]
         func = rand.choice(funcs)
         return f"{func}(x)"
 
@@ -48,21 +58,34 @@ async def generate_exponent_part(rand):
     
     n_type = rand.choice([0, 1, 2, 3])
     
-    if n_type == 0: 
+    if n_type == 0:
+        if b == 1:
+            b = ""
+        elif b == -1:
+            b = "-"
+
         n = rand.choice([1, 2, 3])
         if n == 1:
             exp_str = f"{b}x"
         else:
             exp_str = f"{b}x^{{{n}}}"
     
-    elif n_type == 1:  
+    elif n_type == 1:
+        if b == 1:
+            b = ""
+        elif b == -1:
+            b = "-"
         n_form = rand.choice(["sqrt", "frac"])
         if n_form == "sqrt":
             exp_str = f"{b}\\sqrt{{x}}"
         else:
             exp_str = f"{b}x^{{\\frac{{1}}{{2}}}}"
     
-    elif n_type == 2: 
+    elif n_type == 2:
+        if b == 1:
+            b = ""
+        elif b == -1:
+            b = "-"
         n = rand.choice([-1, -2, -3])
         exp_str = f"{b}x^{{{n}}}"
     
@@ -76,7 +99,7 @@ async def generate_zero_plus_limit(rand):
     
     exp_str = await generate_exponent_part(rand)
     
-    primer = f"\\lim_{{x \\to 0^+}} \\left({base_str}\\right)^{{{exp_str}}}"
+    primer = f"\\lim_{{x \\to 0}} \\left({base_str}\\right)^{{{exp_str}}}"
     
     return primer
 

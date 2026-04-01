@@ -5,43 +5,45 @@ async def generate_coefficient(rand):
     coeff = rand.randint(-10, 10)
     while coeff == 0:
         coeff = rand.randint(-10, 10)
+    if coeff == 1:
+        coeff = ""
+    elif coeff == -1:
+        coeff = "-"
     
-    if coeff > 0 and rand.random() < 0.3:  # Иногда убираем + для положительных
-        return str(coeff)
-    elif coeff > 0:
-        return f"+{coeff}"
-    else:
-        return str(coeff)
+    return str(coeff)
 
 async def generate_base_exponential(rand):
     A = await generate_coefficient(rand)
     
-    variant = rand.choice([1, 2, 3])
+    variant = rand.choice([1, 2])
     
     if variant == 1:
         return f"e^{{{A}x}}"
-    elif variant == 2:
-        if A[0] == '+':
-            return f"e^{{-{A[1:]}x}}"
-        else:
-            return f"e^{{{A[1:] if A[0] == '-' else f'-{A}'}x}}"
     else:
         k = rand.randint(-5, 5)
         if k == 0:
             return f"e^{{{A}x}}"
         elif k > 0:
-            return f"e^{{{k}{A}x}}"
+            if A[0] == "-":
+                return f"e^{{{k}{A}x}}"
+            else:
+                return f"e^{{{k}+{A}x}}"
         else:
             return f"e^{{{A}x{k}}}"
 
 async def generate_exponent_fraction(rand):
     b = await generate_coefficient(rand)
+
+    if b == "":
+        b = 1
+    elif b == "-":
+        b = -1
     
     p_type = rand.choice([1, 2, 3, 4])
     
     if p_type == 1: 
         p = rand.choice([1, 2, 3])
-        return f"\\frac{{{b}}}{{x^{{{p}}}}}"
+        return f"\\frac{{{b}}}{{x^{{{p if p != 1 else ""}}}}}"
     
     elif p_type == 2: 
         p_num = rand.choice([1, 2])
@@ -55,11 +57,11 @@ async def generate_exponent_fraction(rand):
         k = rand.randint(0, 5)
         p = rand.choice([1, 2])
         if k == 0:
-            return f"\\frac{{{b}}}{{x^{{{p}}}}}"
+            return f"\\frac{{{b}}}{{x^{{{p if p != 1 else ""}}}}}"
         elif k > 0:
-            return f"\\frac{{{b}}}{{x^{{{p}}} + {k}}}"
+            return f"\\frac{{{b}}}{{x^{{{p if p != 1 else ""}}} + {k}}}"
         else:
-            return f"\\frac{{{b}}}{{x^{{{p}}} {k}}}"
+            return f"\\frac{{{b}}}{{x^{{{p if p != 1 else ""}}} {k}}}"
     
     else:  
         return f"\\frac{{{b}}}{{x}}"

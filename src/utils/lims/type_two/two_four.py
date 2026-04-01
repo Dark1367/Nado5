@@ -5,13 +5,13 @@ async def generate_coefficient(rand):
     coeff = rand.randint(-10, 10)
     while coeff == 0:
         coeff = rand.randint(-10, 10)
-    
-    if coeff > 0 and rand.random() < 0.3:
-        return str(coeff)
-    elif coeff > 0:
-        return f"+{coeff}"
-    else:
-        return str(coeff)
+
+    if coeff == 1:
+        coeff = ""
+    elif coeff == -1:
+        coeff = "-"
+
+    return str(coeff)
 
 async def generate_term_with_degree(rand, degree):
     coeff = await generate_coefficient(rand)
@@ -113,7 +113,7 @@ async def generate_polynomial_power_limit(rand):
         primer = f"\\lim_{{x \\to 0}} \\left({base_expr}\\right)^{{{exponent}}}"
     elif limit_type == 2:
         side = rand.choice(["+", "-"])
-        primer = f"\\lim_{{x \\to 0^{side}}} \\left({base_expr}\\right)^{{{exponent}}}"
+        primer = f"\\lim_{{x \\to 0}} \\left({base_expr}\\right)^{{{exponent}}}"
     else:
         primer = f"\\lim_{{x \\to 0}} \\left[{base_expr}\\right]^{{{exponent}}}"
     

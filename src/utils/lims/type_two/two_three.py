@@ -5,18 +5,22 @@ async def generate_coefficient(rand):
     coeff = rand.randint(-10, 10)
     while coeff == 0:
         coeff = rand.randint(-10, 10)
-    
-    if coeff > 0 and rand.random() < 0.3:
-        return str(coeff)
-    elif coeff > 0:
-        return f"+{coeff}"
-    else:
-        return str(coeff)
+
+    if coeff == 1:
+        coeff = ""
+    elif coeff == -1:
+        coeff = "-"
+
+    return str(coeff)
 
 async def generate_polynomial_term(rand, degree, force_coeff=False):
     coeff = await generate_coefficient(rand)
     
     if degree == 0:
+        if coeff == "":
+            coeff = 1
+        elif coeff == "-":
+            coeff = -1
         return coeff
     elif degree == 1:
         return f"{coeff}x"
@@ -42,6 +46,7 @@ async def generate_polynomial(rand, min_degree=0.5, max_terms=3):
         m = rand.choice([0, -1, -2])
     
     A = await generate_coefficient(rand)
+
     if m == 0:
         main_term = A
     elif m == 1:
@@ -104,7 +109,11 @@ async def generate_exponent(rand):
         p = rand.choice([-1, -2, -3])
         return f"{b}x^{{{p}}}"
     
-    else: 
+    else:
+        if b == "":
+            b = 1
+        elif b == "-":
+            b = -1
         return str(b)
 
 async def generate_root_limit(rand):
@@ -119,11 +128,11 @@ async def generate_root_limit(rand):
     limit_form = rand.choice([1, 2, 3])
     
     if limit_form == 1:
-        primer = f"\\lim_{{x \\to 0^+}} \\left({base_str}\\right)^{{{exponent}}}"
+        primer = f"\\lim_{{x \\to 0}} \\left({base_str}\\right)^{{{exponent}}}"
     elif limit_form == 2:
-        primer = f"\\lim_{{x \\to 0^+}} \\left[{base_str}\\right]^{{{exponent}}}"
+        primer = f"\\lim_{{x \\to 0}} \\left[{base_str}\\right]^{{{exponent}}}"
     else:
-        primer = f"\\lim_{{x \\to 0^+}} \\left({base_str}\\right)^{{\\left({exponent}\\right)}}"
+        primer = f"\\lim_{{x \\to 0}} \\left({base_str}\\right)^{{\\left({exponent}\\right)}}"
     
     return primer
 
