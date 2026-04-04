@@ -20,11 +20,13 @@ async def generate_trig_power_limit(rand):
         c = rand.randint(-10, 10)
     
 
-    trig_funcs = ["\\sin", "\\cos", "\\tan", "\\cot"]
+    trig_funcs = ["\\sin", "\\cos", "\\text{tg}", "\\text{ctg}"]
     trig_func = rand.choice(trig_funcs)
     
 
     k = rand.randint(1, 5)
+    if k == 1:
+        k = ""
     
     if rand.chance(30):  
         arg_type = rand.randint(1, 3)
@@ -138,7 +140,7 @@ async def generate_trig_power_limit_variations(rand):
     
     if variation == 1:
 
-        trig_funcs = ["\\sin", "\\cos", "\\tan", "\\cot"]
+        trig_funcs = ["\\sin", "\\cos", "\\text{tg}", "\\text{ctg}"]
         trig_func = rand.choice(trig_funcs)
         
     
@@ -153,7 +155,7 @@ async def generate_trig_power_limit_variations(rand):
             arg = f"{k}x"
     
     elif variation == 2:
-        trig_funcs = ["\\sin", "\\cos", "\\tan", "\\cot"]
+        trig_funcs = ["\\sin", "\\cos", "\\text{tg}", "\\text{ctg}"]
         trig1 = rand.choice(trig_funcs)
         trig2 = rand.choice(trig_funcs)
         
@@ -191,7 +193,7 @@ async def generate_trig_power_limit_variations(rand):
         numerator = f"{b}+{trig_part1}{trig_part2}"
     
     else: 
-        inv_trig_funcs = ["\\arcsin", "\\arccos", "\\arctan", "\\arccot"]
+        inv_trig_funcs = ["\\text{arcsin}", "\\text{arccos}", "\\text{arctan}", "\\text{arccot}"]
         trig_func = rand.choice(inv_trig_funcs)
         
  
@@ -245,7 +247,7 @@ async def generate_trig_power_limit_with_exponential(rand):
     while c == 0:
         c = rand.randint(-8, 8)
    
-    trig_funcs = ["\\sin", "\\cos", "\\tan", "\\cot"]
+    trig_funcs = ["\\sin", "\\cos", "\\text{tg}", "\\text{ctg}"]
     trig_func = rand.choice(trig_funcs)
     k = rand.randint(1, 5)
     

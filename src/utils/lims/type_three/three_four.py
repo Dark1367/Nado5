@@ -14,14 +14,26 @@ async def chlen(rand, n=None, force_nonzero=False):
                 mult = rand.randint(-10, 10)
                 if not force_nonzero or mult != 0:
                     break
-            s = f"{mult}x{f"^{{{deg}}}" if deg != 1 else ""}"
+            if mult == 1:
+                smult = ""
+            elif mult == -1:
+                smult = "-"
+            else:
+                smult = mult
+            s = f"{smult}x{f"^{{{deg}}}" if deg != 1 else ""}"
         else:
             deg = n
             while True:
                 mult = rand.randint(-10, 10)
                 if not force_nonzero or mult != 0:
                     break
-            s = f"{mult}\\sqrt{{x{f"^{{{int(deg * 2)}}}" if deg * 2 != 1 else ""}}}"
+            if mult == 1:
+                smult = ""
+            elif mult == -1:
+                smult = "-"
+            else:
+                smult = mult
+            s = f"{smult}\\sqrt{{x{f"^{{{int(deg * 2)}}}" if deg * 2 != 1 else ""}}}"
         return s, deg, str(mult)
 
     if type == 1:
@@ -30,7 +42,13 @@ async def chlen(rand, n=None, force_nonzero=False):
             if not force_nonzero or mult != 0:
                 break
         deg = rand.randint(-3, 3)
-        s = f"{mult}x{f"^{{{deg}}}" if deg != 1 else ""}"
+        if mult == 1:
+            smult = ""
+        elif mult == -1:
+            smult = "-"
+        else:
+            smult = mult
+        s = f"{smult}x{f"^{{{deg}}}" if deg != 1 else ""}"
 
     if type == 2:
         while True:
@@ -40,7 +58,13 @@ async def chlen(rand, n=None, force_nonzero=False):
         deg = rand.randint(-6, 6)/2
         if deg%1==0:
             deg = int(deg)
-        s = f"{mult}\\sqrt{{x{f"^{{{int(deg*2)}}}" if deg*2 != 1 else ""}}}"
+        if mult == 1:
+            smult = ""
+        elif mult == -1:
+            smult = "-"
+        else:
+            smult = mult
+        s = f"{smult}\\sqrt{{x{f"^{{{int(deg*2)}}}" if deg*2 != 1 else ""}}}"
 
     if type == 3:
         while True:

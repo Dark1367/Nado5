@@ -233,12 +233,15 @@ async def generate_log_power_limit_with_trig(rand):
         b = rand.randint(-8, 8)
     
    
-    trig_funcs = ["\\sin", "\\cos", "\\tan", "\\cot"]
+    trig_funcs = ["\\sin", "\\cos", "\\text{tg}", "\\text{ctg}"]
     trig_func = rand.choice(trig_funcs)
     
   
     k = rand.randint(1, 4)
-    arg = f"{k}x"
+    if k == 1:
+        arg = "x"
+    else:
+        arg = f"{k}x"
     
     if variation == 1:
         A = rand.randint(2, 6)
