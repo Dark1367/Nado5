@@ -228,6 +228,6 @@ async def generate_lim_3_3(rand, n, variations=True):
         else:  
             primer = await generate_root_power_zero_limit(rand)
         
-        primers.append("3.3"+primer)
+        primers.append(primer)
     
     return primers

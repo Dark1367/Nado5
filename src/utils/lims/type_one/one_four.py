@@ -49,6 +49,6 @@ async def generate_lim_1_4(rand, n):
     primers = []
     for _ in range(n):
         primer = await generate_exp_limit(rand)
-        primers.append("1.4"+primer)
+        primers.append(primer)
     return primers
 

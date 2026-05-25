@@ -232,6 +232,6 @@ async def generate_lim_1_2(rand, n):
     primers = []
     for _ in range(n):
         primer = await generate_general_limit(rand)
-        primers.append("1.2"+primer)
+        primers.append(primer)
     return primers
 

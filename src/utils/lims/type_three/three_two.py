@@ -221,6 +221,6 @@ async def generate_lim_3_2(rand, n, variations=True, trig=True):
         else: 
             primer = await generate_exp_power_zero_limit(rand)
         
-        primers.append("3.2"+primer)
+        primers.append(primer)
     
     return primers

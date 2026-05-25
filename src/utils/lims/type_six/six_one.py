@@ -111,5 +111,5 @@ async def generate_limit(rand):
 async def generate_lim_6_1(rand, n):
     primer = []
     for _ in range(n):
-        primer.append("6.1"+await generate_limit(rand))
+        primer.append(await generate_limit(rand))
     return primer

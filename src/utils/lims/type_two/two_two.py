@@ -87,6 +87,6 @@ async def generate_lim_2_2(rand, n):
     
     for i in range(n):
         primer = await generate_infinity_limit(rand)
-        primers.append("2.2"+primer)
+        primers.append(primer)
     
     return primers

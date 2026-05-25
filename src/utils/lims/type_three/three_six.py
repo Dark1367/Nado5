@@ -294,7 +294,7 @@ async def generate_lim_3_6(rand, n, variations=True):
         else:
             primer = await generate_log_power_limit(rand)
         
-        primers.append("3.6"+primer)
+        primers.append(primer)
     
     return primers
 

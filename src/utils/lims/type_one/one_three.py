@@ -237,5 +237,5 @@ async def generate_lim_1_3(rand, n):
     primers = []
     for _ in range(n):
         primer = await generate_root_limit(rand)
-        primers.append("1.3"+primer)
+        primers.append(primer)
     return primers

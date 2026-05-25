@@ -17,9 +17,9 @@ async def monomial(rand, max_deg, min_deg=0):
 
 async def cos_or_sin(rand):
     monomial_s, _, _ = await monomial(rand, 6)
-    func = "sin"
+    func = "\\sin"
     if rand.chance(50):
-        func = "cos"
+        func = "\\cos"
     string = f"{func}({monomial_s})"
     return string
 
@@ -70,5 +70,5 @@ async def generate_lim_4_2(rand, n):
     primers = []
     for _ in range(n):
         primer, solution = await generate_lim(rand)
-        primers.append("4.2"+primer)
+        primers.append(primer)
     return primers

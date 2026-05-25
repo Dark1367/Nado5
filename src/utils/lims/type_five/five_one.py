@@ -50,5 +50,5 @@ async def generate_lim_5_1(rand, n):
     primers = []
     for _ in range(n):
         primer, solution = await generate_lim(rand)
-        primers.append("5.1"+primer)
+        primers.append(primer)
     return primers
